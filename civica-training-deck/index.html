@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connecting Admissions+ to Civica CCM</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f5f7fb;
+  color: #0b1023;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Slide system */
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateX(60px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  padding: 60px 80px;
+}
+.slide.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+.slide.exit {
+  opacity: 0;
+  transform: translateX(-60px);
+}
+
+.slide-inner {
+  width: 100%;
+  max-width: 1100px;
+}
+
+/* Progress bar */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #273c91, #ec634b);
+  transition: width 0.4s ease;
+  z-index: 100;
+}
+
+/* Slide counter */
+.slide-counter {
+  position: fixed;
+  bottom: 30px;
+  right: 40px;
+  font-size: 14px;
+  color: rgba(11,16,35,0.25);
+  z-index: 100;
+  font-weight: 500;
+}
+
+/* Nav arrows on screen */
+.nav-arrows {
+  position: fixed;
+  bottom: 24px;
+  left: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 100;
+}
+.nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(11,16,35,0.1);
+  background: white;
+  color: #273c91;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.nav-btn:hover {
+  background: #273c91;
+  color: white;
+  border-color: #273c91;
+}
+
+/* Typography */
+h1 { font-size: 3.6rem; font-weight: 800; line-height: 1.12; letter-spacing: -0.03em; color: #0b1023; }
+h2 { font-size: 2.8rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; color: #0b1023; }
+h3 { font-size: 1.25rem; font-weight: 600; line-height: 1.4; color: #0b1023; }
+.subtitle { font-size: 1.35rem; color: rgba(11,16,35,0.5); line-height: 1.6; font-weight: 400; }
+.label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #ec634b;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border: 1px solid rgba(11,16,35,0.07);
+  border-radius: 18px;
+  padding: 30px;
+  transition: all 0.3s;
+  box-shadow: 0 2px 12px rgba(11,16,35,0.04);
+}
+.card:hover {
+  box-shadow: 0 8px 30px rgba(39,60,145,0.08);
+  border-color: rgba(39,60,145,0.12);
+}
+
+.card-accent {
+  background: linear-gradient(135deg, #e9f1fe, #fef8ea);
+  border: 1px solid rgba(39,60,145,0.1);
+}
+
+.card-navy {
+  background: #273c91;
+  color: white;
+  border: none;
+}
+.card-navy h3, .card-navy .subtitle { color: white; }
+
+/* Icon circles */
+.icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+/* Grids */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 18px; }
+.grid-5 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 16px; }
+
+/* Flow */
+.flow-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.flow-arrow {
+  color: rgba(11,16,35,0.15);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.flow-box {
+  background: white;
+  border: 1px solid rgba(11,16,35,0.08);
+  border-radius: 14px;
+  padding: 16px 22px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+  flex: 1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.flow-box.highlight {
+  background: linear-gradient(135deg, rgba(236,99,75,0.08), rgba(236,99,75,0.02));
+  border-color: rgba(236,99,75,0.2);
+  color: #ec634b;
+}
+
+/* Before/After tag */
+.tag-before {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(11,16,35,0.35);
+  margin-bottom: 14px;
+}
+
+/* Animate-in children */
+.slide.active .animate-in {
+  animation: fadeUp 0.5s ease forwards;
+}
+.slide.active .animate-in:nth-child(1) { animation-delay: 0.1s; }
+.slide.active .animate-in:nth-child(2) { animation-delay: 0.2s; }
+.slide.active .animate-in:nth-child(3) { animation-delay: 0.3s; }
+.slide.active .animate-in:nth-child(4) { animation-delay: 0.4s; }
+.slide.active .animate-in:nth-child(5) { animation-delay: 0.5s; }
+.slide.active .animate-in:nth-child(6) { animation-delay: 0.6s; }
+.slide.active .animate-in:nth-child(7) { animation-delay: 0.7s; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in { opacity: 0; }
+
+/* Pulse dot */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.pulse { animation: pulse 2s infinite; }
+
+/* Timeline */
+.timeline-item {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 14px 0;
+}
+.timeline-dot {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.timeline-content h3 {
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+.timeline-content p {
+  font-size: 0.9rem;
+  color: rgba(11,16,35,0.5);
+  line-height: 1.5;
+}
+
+/* Framework block */
+.framework-block {
+  background: white;
+  border-left: 4px solid;
+  border-radius: 0 14px 14px 0;
+  padding: 22px 26px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+/* Stat number */
+.stat-number {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #273c91;
+  line-height: 1;
+}
+
+/* Applicaa branding accents */
+.navy-gradient {
+  background: linear-gradient(135deg, #273c91, #35a7e7);
+}
+
+/* Agenda timeline */
+.agenda-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(11,16,35,0.04);
+}
+.agenda-item:last-child { border-bottom: none; }
+.agenda-time {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #273c91;
+  white-space: nowrap;
+  min-width: 110px;
+}
+.agenda-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #0b1023;
+}
+.agenda-note {
+  font-size: 0.85rem;
+  color: rgba(11,16,35,0.4);
+  margin-top: 2px;
+}
+
+/* Lifecycle flow */
+.lifecycle-flow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.lifecycle-stage {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+.lifecycle-arrow {
+  color: rgba(11,16,35,0.15);
+  font-size: 0.8rem;
+}
+
+/* Roadmap columns */
+.roadmap-col h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.roadmap-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 0.88rem;
+  color: rgba(11,16,35,0.7);
+  line-height: 1.4;
+}
+.roadmap-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.roadmap-date {
+  font-size: 0.75rem;
+  color: rgba(11,16,35,0.35);
+  font-weight: 500;
+}
+
+/* Swim lane styles */
+.swim-lane {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin-bottom: 4px;
+}
+.lane-label {
+  width: 160px;
+  min-width: 160px;
+  padding: 10px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  border-right: 3px solid;
+  background: rgba(11,16,35,0.02);
+}
+.lane-tasks {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+.postit {
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  box-shadow: 1px 2px 4px rgba(0,0,0,0.1);
+  transform: rotate(-1deg);
+  line-height: 1.3;
+}
+.postit:nth-child(even) { transform: rotate(1.5deg); }
+.postit:nth-child(3n) { transform: rotate(-0.5deg); }
+
+/* Slide panel overlay */
+.slide-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11,16,35,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.slide-panel-overlay.open {
+  display: flex;
+}
+.slide-panel {
+  background: white;
+  border-radius: 20px;
+  padding: 28px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.slide-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.slide-panel-header h3 {
+  font-size: 1.2rem;
+  color: #0b1023;
+}
+.slide-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.slide-thumb {
+  padding: 14px 12px;
+  background: #f5f7fb;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  font-size: 0.75rem;
+  color: rgba(11,16,35,0.6);
+  line-height: 1.4;
+}
+.slide-thumb:hover {
+  border-color: #273c91;
+  background: #e9f1fe;
+}
+.slide-thumb.active {
+  border-color: #273c91;
+  background: #e9f1fe;
+  color: #273c91;
+  font-weight: 600;
+}
+.slide-thumb .thumb-num {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #273c91;
+  margin-bottom: 4px;
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="slide-counter" id="slideCounter"></div>
+
+<div class="nav-arrows">
+  <div class="nav-btn" onclick="goTo(current - 1)"><i class="fas fa-arrow-left"></i></div>
+  <div class="nav-btn" onclick="goTo(current + 1)"><i class="fas fa-arrow-right"></i></div>
+  <div class="nav-btn" onclick="toggleSlidePanel()" title="All slides"><i class="fas fa-th"></i></div>
+</div>
+
+<!-- ============================== -->
+<!-- SLIDE 1: TITLE -->
+<!-- Speaker note: Warm welcome; this is a "how it works" overview, not deep technical training. -->
+<!-- ============================== -->
+<div class="slide active" data-slide="0">
+  <div class="slide-inner" style="text-align:center;">
+    <div class="animate-in">
+      <div class="label" style="margin-bottom:28px;">Admissions+ &times; Civica Integration</div>
+    </div>
+    <div class="animate-in">
+      <h1 style="margin-bottom:24px;">Connecting Admissions+ to Civica CCM</h1>
+    </div>
+    <div class="animate-in">
+      <p class="subtitle" style="max-width:650px;margin:0 auto 36px;">Customer training and walkthrough</p>
+    </div>
+    <div class="animate-in" style="margin-bottom:32px;">
+      <div style="display:inline-flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;">
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:white;border:1px solid rgba(11,16,35,0.08);border-radius:12px;font-size:0.9rem;color:rgba(11,16,35,0.55);box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+          <i class="fas fa-calendar-day" style="color:#273c91;"></i>Monday 15 June 2026
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:white;border:1px solid rgba(11,16,35,0.08);border-radius:12px;font-size:0.9rem;color:rgba(11,16,35,0.55);box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+          <i class="fas fa-chalkboard-user" style="color:#35a7e7;"></i>Led by Applicaa
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:white;border:1px solid rgba(11,16,35,0.08);border-radius:12px;font-size:0.9rem;color:rgba(11,16,35,0.55);box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+          <i class="fas fa-circle-dot" style="color:#ec634b;"></i>Session is recorded
+        </div>
+      </div>
+    </div>
+    <div class="animate-in" style="display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;">
+      <div style="display:inline-flex;align-items:center;gap:10px;font-size:0.95rem;color:rgba(11,16,35,0.7);">
+        <i class="fas fa-user" style="color:#273c91;"></i><span><strong>Irvin Go</strong> &middot; Applicaa</span>
+      </div>
+      <div style="width:1px;height:18px;background:rgba(11,16,35,0.1);"></div>
+      <div style="display:inline-flex;align-items:center;gap:10px;font-size:0.95rem;color:rgba(11,16,35,0.7);">
+        <i class="fas fa-user" style="color:#273c91;"></i><span><strong>Andy Bradnock</strong> &middot; Applicaa</span>
+      </div>
+      <div style="width:1px;height:18px;background:rgba(11,16,35,0.1);"></div>
+      <div style="display:inline-flex;align-items:center;gap:10px;font-size:0.95rem;color:rgba(11,16,35,0.7);">
+        <i class="fas fa-user" style="color:#ec634b;"></i><span><strong>Beth Pettican</strong> &middot; Civica</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- SLIDE 2: AGENDA -->
+<!-- Speaker note: Items 1 & 4 are live demos by Irvin; item 3 is Andy. Read in this order. -->
+<!-- ============================== -->
+<div class="slide" data-slide="1">
+  <div class="slide-inner">
+    <div class="animate-in">
+      <div class="label" style="margin-bottom:18px;">Running Order</div>
+      <h2 style="margin-bottom:36px;">Today's Agenda</h2>
+    </div>
+    <div class="animate-in">
+      <div class="card" style="padding:24px 36px;">
+        <div class="agenda-item" style="padding:16px 0;">
+          <div style="width:46px;height:46px;border-radius:14px;background:rgba(53,167,231,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-gears" style="color:#35a7e7;font-size:1.1rem;"></i>
+          </div>
+          <div>
+            <div class="agenda-title">1. Configuration and App login</div>
+          </div>
+        </div>
+        <div class="agenda-item" style="padding:16px 0;">
+          <div style="width:46px;height:46px;border-radius:14px;background:rgba(168,85,247,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-table-list" style="color:#a855f7;font-size:1.1rem;"></i>
+          </div>
+          <div>
+            <div class="agenda-title">2. Supported Fields Overview</div>
+          </div>
+        </div>
+        <div class="agenda-item" style="padding:16px 0;">
+          <div style="width:46px;height:46px;border-radius:14px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-route" style="color:#f59e0b;font-size:1.1rem;"></i>
+          </div>
+          <div>
+            <div class="agenda-title">3. Migration process</div>
+          </div>
+        </div>
+        <div class="agenda-item" style="padding:16px 0;">
+          <div style="width:46px;height:46px;border-radius:14px;background:rgba(236,99,75,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-cloud-arrow-up" style="color:#ec634b;font-size:1.1rem;"></i>
+          </div>
+          <div>
+            <div class="agenda-title">4. Data Export Process</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="animate-in" style="margin-top:22px;text-align:center;">
+      <span style="font-size:0.9rem;color:rgba(11,16,35,0.45);">
+        <i class="fas fa-comments" style="color:#35a7e7;margin-right:8px;"></i>Questions welcome throughout &middot; recording shared afterwards
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- SLIDE 3: THE BIG IDEA -->
+<!-- Speaker note: Anchor the whole session on this model. One-way, A+ to Civica. Civica stays source of truth. -->
+<!-- ============================== -->
+<div class="slide" data-slide="2">
+  <div class="slide-inner">
+    <div class="animate-in">
+      <div class="label" style="margin-bottom:18px;">How It Fits Together</div>
+      <h2 style="margin-bottom:32px;">One bridge, one direction</h2>
+    </div>
+    <div class="grid-3" style="gap:22px;margin-bottom:26px;">
+      <div class="animate-in">
+        <div class="card" style="height:100%;text-align:center;padding:28px 22px;">
+          <div class="icon-circle" style="background:rgba(39,60,145,0.1);color:#273c91;margin:0 auto 16px;">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <h3 style="font-size:1.1rem;margin-bottom:10px;">Admissions+</h3>
+          <p style="font-size:0.9rem;color:rgba(11,16,35,0.5);line-height:1.6;">Where applicants apply and admissions are managed</p>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;text-align:center;padding:28px 22px;">
+          <div class="icon-circle" style="background:rgba(53,167,231,0.1);color:#35a7e7;margin:0 auto 16px;">
+            <i class="fas fa-laptop"></i>
+          </div>
+          <h3 style="font-size:1.1rem;margin-bottom:10px;">The Integration App</h3>
+          <p style="font-size:0.9rem;color:rgba(11,16,35,0.5);line-height:1.6;">A lightweight desktop app that writes your applicant data across</p>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;text-align:center;padding:28px 22px;">
+          <div class="icon-circle" style="background:rgba(34,197,94,0.1);color:#22c55e;margin:0 auto 16px;">
+            <i class="fas fa-database"></i>
+          </div>
+          <h3 style="font-size:1.1rem;margin-bottom:10px;">Civica CCM</h3>
+          <p style="font-size:0.9rem;color:rgba(11,16,35,0.5);line-height:1.6;">Your management information system, the single source of truth</p>
+        </div>
+      </div>
+    </div>
+    <div class="animate-in">
+      <div class="flow-row" style="margin-bottom:24px;">
+        <div class="flow-box">Admissions+</div>
+        <div class="flow-arrow"><i class="fas fa-arrow-right-long"></i></div>
+        <div class="flow-box highlight">Integration App</div>
+        <div class="flow-arrow"><i class="fas fa-arrow-right-long"></i></div>
+        <div class="flow-box">Civica CCM</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(11,16,35,0.35);white-space:nowrap;padding-left:6px;">
+          <i class="fas fa-arrow-right" style="color:#ec634b;"></i>One-way
+        </div>
+      </div>
+    </div>
+    <div class="animate-in">
+      <div class="card card-accent" style="display:flex;align-items:center;gap:14px;padding:18px 26px;">
+        <i class="fas fa-circle-info" style="color:#273c91;font-size:1.2rem;"></i>
+        <span style="font-size:0.98rem;color:#273c91;font-weight:500;">Prerequisite on your side: Open APIs enabled in College Management</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- SLIDE 4: TOPIC 1 - CONFIGURATION AND APP LOGIN -->
+<!-- Speaker note: Keep light, do not read endpoints one by one. Prerequisite: Open APIs enabled in College Management or Civica won't verify. Then go to live demo. -->
+<!-- ============================== -->
+<div class="slide" data-slide="3">
+  <div class="slide-inner">
+    <div class="animate-in">
+      <div class="label" style="margin-bottom:18px;">Topic 1</div>
+      <h2 style="margin-bottom:32px;">Configuration and App login</h2>
+    </div>
+    <div class="grid-4" style="gap:18px;">
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:26px 22px;">
+          <div class="icon-circle" style="background:rgba(53,167,231,0.1);color:#35a7e7;margin-bottom:16px;">
+            <i class="fas fa-download"></i>
+          </div>
+          <div style="font-size:1.6rem;font-weight:800;color:#273c91;margin-bottom:8px;">1</div>
+          <h3 style="font-size:1rem;margin-bottom:10px;">Install</h3>
+          <p style="font-size:0.85rem;color:rgba(11,16,35,0.55);line-height:1.55;">Install the app once, then it auto-updates on every launch</p>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:26px 22px;">
+          <div class="icon-circle" style="background:rgba(168,85,247,0.1);color:#a855f7;margin-bottom:16px;">
+            <i class="fas fa-right-to-bracket"></i>
+          </div>
+          <div style="font-size:1.6rem;font-weight:800;color:#273c91;margin-bottom:8px;">2</div>
+          <h3 style="font-size:1rem;margin-bottom:10px;">Sign in</h3>
+          <p style="font-size:0.85rem;color:rgba(11,16,35,0.55);line-height:1.55;">Sign in with your Admissions+ email, password and school subdomain</p>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:26px 22px;">
+          <div class="icon-circle" style="background:rgba(245,158,11,0.1);color:#f59e0b;margin-bottom:16px;">
+            <i class="fas fa-plug"></i>
+          </div>
+          <div style="font-size:1.6rem;font-weight:800;color:#273c91;margin-bottom:8px;">3</div>
+          <h3 style="font-size:1rem;margin-bottom:10px;">Add your Civica settings</h3>
+          <p style="font-size:0.85rem;color:rgba(11,16,35,0.55);line-height:1.55;">Agent credentials and your five API endpoints (Account, Reference Data, Application, Course, Utilities)</p>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:26px 22px;">
+          <div class="icon-circle" style="background:rgba(34,197,94,0.1);color:#22c55e;margin-bottom:16px;">
+            <i class="fas fa-circle-check"></i>
+          </div>
+          <div style="font-size:1.6rem;font-weight:800;color:#273c91;margin-bottom:8px;">4</div>
+          <h3 style="font-size:1rem;margin-bottom:10px;">Go green</h3>
+          <p style="font-size:0.85rem;color:rgba(11,16,35,0.55);line-height:1.55;">Indicators confirm the app can reach Applicaa and talk to Civica</p>
+        </div>
+      </div>
+    </div>
+    <div class="animate-in" style="margin-top:26px;text-align:center;">
+      <div style="display:inline-flex;align-items:center;gap:10px;padding:14px 26px;background:linear-gradient(135deg,#e9f1fe,#fef8ea);border:1px solid rgba(39,60,145,0.1);border-radius:14px;font-size:0.95rem;color:#273c91;font-weight:500;">
+        <i class="fas fa-shield-halved" style="color:#ec634b;"></i>
+        IT whitelists three Applicaa URLs &middot; we will show this live in a moment
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- SLIDE 5: LIVE DEMO - CONFIGURE AND LOG IN -->
+<!-- Speaker note: Switch to the app. If anything misbehaves, narrate calmly and fall back to describing the steps. Depends on the new build being confirmed at the 10:00 internal test. -->
+<!-- ============================== -->
+<div class="slide" data-slide="4">
+  <div class="slide-inner" style="text-align:center;">
+    <div class="animate-in">
+      <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,rgba(39,60,145,0.08),rgba(236,99,75,0.08));display:flex;align-items:center;justify-content:center;margin:0 auto 36px;">
+        <i class="fas fa-play" style="font-size:2.5rem;color:#273c91;margin-left:6px;"></i>
+      </div>
+    </div>
+    <div class="animate-in">
+      <div class="label" style="margin-bottom:18px;">Live Demo</div>
+    </div>
+    <div class="animate-in">
+      <h2 style="margin-bottom:20px;">Live: configure and log in</h2>
+    </div>
+    <div class="animate-in">
+      <p class="subtitle" style="max-width:680px;margin:0 auto;font-size:1.2rem;">On the Civica Test environment: enter endpoints, sign in, watch lookups sync</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- SLIDE 6: TOPIC 2 - SUPPORTED FIELDS OVERVIEW -->
+<!-- Speaker note: Name the groups, keep it light. Field selection is per-school. Do NOT claim every group is fully live; if pressed on specifics, say some areas are still being finalised with Civica. Keep that off the slide. -->
+<!-- ============================== -->
+<div class="slide" data-slide="5">
+  <div class="slide-inner">
+    <div class="animate-in">
+      <div class="label" style="margin-bottom:14px;">Topic 2</div>
+      <h2 style="margin-bottom:10px;">Supported Fields Overview</h2>
+      <p class="subtitle" style="font-size:1.05rem;margin-bottom:28px;">The data the app can carry from Admissions+ into Civica, grouped into eight categories. You choose which to send at import time.</p>
+    </div>
+    <div class="grid-4" style="gap:18px;">
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:22px 20px;display:flex;align-items:center;gap:14px;">
+          <div style="width:42px;height:42px;border-radius:12px;background:rgba(39,60,145,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-id-card" style="color:#273c91;"></i>
+          </div>
+          <h3 style="font-size:0.98rem;">Basic Details</h3>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:22px 20px;display:flex;align-items:center;gap:14px;">
+          <div style="width:42px;height:42px;border-radius:12px;background:rgba(53,167,231,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-fingerprint" style="color:#35a7e7;"></i>
+          </div>
+          <h3 style="font-size:0.98rem;">Identifiers <span style="font-weight:400;color:rgba(11,16,35,0.4);font-size:0.8rem;">(ULN, UPN, NI Number)</span></h3>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:22px 20px;display:flex;align-items:center;gap:14px;">
+          <div style="width:42px;height:42px;border-radius:12px;background:rgba(236,99,75,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-location-dot" style="color:#ec634b;"></i>
+          </div>
+          <h3 style="font-size:0.98rem;">Addresses</h3>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:22px 20px;display:flex;align-items:center;gap:14px;">
+          <div style="width:42px;height:42px;border-radius:12px;background:rgba(34,197,94,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-phone" style="color:#22c55e;"></i>
+          </div>
+          <h3 style="font-size:0.98rem;">Telephones</h3>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:22px 20px;display:flex;align-items:center;gap:14px;">
+          <div style="width:42px;height:42px;border-radius:12px;background:rgba(168,85,247,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-users" style="color:#a855f7;"></i>
+          </div>
+          <h3 style="font-size:0.98rem;">Contacts</h3>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:22px 20px;display:flex;align-items:center;gap:14px;">
+          <div style="width:42px;height:42px;border-radius:12px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-globe" style="color:#f59e0b;"></i>
+          </div>
+          <h3 style="font-size:0.98rem;">Ethnic &amp; Cultural</h3>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:22px 20px;display:flex;align-items:center;gap:14px;">
+          <div style="width:42px;height:42px;border-radius:12px;background:rgba(53,167,231,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-heart" style="color:#35a7e7;"></i>
+          </div>
+          <h3 style="font-size:0.98rem;">Welfare</h3>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:22px 20px;display:flex;align-items:center;gap:14px;">
+          <div style="width:42px;height:42px;border-radius:12px;background:rgba(39,60,145,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-school" style="color:#273c91;"></i>
+          </div>
+          <h3 style="font-size:0.98rem;">School History</h3>
+        </div>
+      </div>
+    </div>
+    <div class="animate-in" style="margin-top:24px;text-align:center;">
+      <span style="font-size:0.9rem;color:rgba(11,16,35,0.45);">
+        <i class="fas fa-sliders" style="color:#ec634b;margin-right:8px;"></i>Field selection is configurable per school: we will tailor it with you.
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- SLIDE 7: TOPIC 3 - MIGRATION PROCESS (THE JOURNEY) -->
+<!-- Speaker note: Andy presents verbally (no live app). Reassure: most heavy lifting is Applicaa; the school's hands-on part is one focused mapping task. Keep internal button names off the slide. -->
+<!-- ============================== -->
+<div class="slide" data-slide="6">
+  <div class="slide-inner">
+    <div class="animate-in">
+      <div class="label" style="margin-bottom:18px;">Topic 3</div>
+      <h2 style="margin-bottom:30px;">The migration journey</h2>
+    </div>
+    <div class="grid-2" style="gap:28px;margin-bottom:26px;">
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:28px;border-top:4px solid #273c91;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+            <div style="width:42px;height:42px;border-radius:12px;background:rgba(39,60,145,0.08);display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-gears" style="color:#273c91;"></i>
+            </div>
+            <h3 style="font-size:1.1rem;">Applicaa prepares <span style="font-weight:400;font-size:0.85rem;color:rgba(11,16,35,0.4);">(behind the scenes)</span></h3>
+          </div>
+          <ul style="list-style:none;font-size:0.92rem;color:rgba(11,16,35,0.65);line-height:1.6;">
+            <li style="margin-bottom:12px;"><i class="fas fa-check" style="color:#273c91;margin-right:10px;font-size:0.8rem;"></i>Enable the integration</li>
+            <li style="margin-bottom:12px;"><i class="fas fa-check" style="color:#273c91;margin-right:10px;font-size:0.8rem;"></i>Check and update your forms</li>
+            <li style="margin-bottom:12px;"><i class="fas fa-check" style="color:#273c91;margin-right:10px;font-size:0.8rem;"></i>Map your address lines</li>
+            <li><i class="fas fa-check" style="color:#273c91;margin-right:10px;font-size:0.8rem;"></i>Generate a review list of values to check</li>
+          </ul>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:28px;border-top:4px solid #ec634b;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+            <div style="width:42px;height:42px;border-radius:12px;background:rgba(236,99,75,0.08);display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-hand-pointer" style="color:#ec634b;"></i>
+            </div>
+            <h3 style="font-size:1.1rem;">You do <span style="font-weight:400;font-size:0.85rem;color:rgba(11,16,35,0.4);">(with our guidance)</span></h3>
+          </div>
+          <ul style="list-style:none;font-size:0.92rem;color:rgba(11,16,35,0.65);line-height:1.6;">
+            <li style="margin-bottom:12px;"><i class="fas fa-check" style="color:#ec634b;margin-right:10px;font-size:0.8rem;"></i>Install the app and import your lookups</li>
+            <li style="margin-bottom:12px;"><i class="fas fa-check" style="color:#ec634b;margin-right:10px;font-size:0.8rem;"></i>Map your lookup values</li>
+            <li><i class="fas fa-check" style="color:#ec634b;margin-right:10px;font-size:0.8rem;"></i>Run a test transfer to confirm</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="animate-in">
+      <div class="card card-accent" style="display:flex;align-items:center;justify-content:center;gap:28px;padding:18px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:8px;font-size:0.95rem;color:#273c91;font-weight:500;">
+          <i class="fas fa-calendar-days" style="color:#35a7e7;"></i>Standard school up to 14 days
+        </div>
+        <div style="width:1px;height:20px;background:rgba(11,16,35,0.1);"></div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:0.95rem;color:#273c91;font-weight:500;">
+          <i class="fas fa-building" style="color:#a855f7;"></i>MAT up to 30 days
+        </div>
+        <div style="width:1px;height:20px;background:rgba(11,16,35,0.1);"></div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:0.95rem;color:#ec634b;font-weight:500;">
+          <i class="fas fa-triangle-exclamation"></i>Avoid enrolment week
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- SLIDE 8: THE MAPPING STEP, EXPLAINED SIMPLY -->
+<!-- Speaker note: Schools find this confusing ("what is this?"). Over-explain. "Match your wording to Civica's wording." For no-MIS schools it may be minimal: say "may be minimal for you", not "nothing to map". -->
+<!-- ============================== -->
+<div class="slide" data-slide="7">
+  <div class="slide-inner">
+    <div class="animate-in">
+      <div class="label" style="margin-bottom:18px;">Topic 3 (continued)</div>
+      <h2 style="margin-bottom:32px;">The mapping step, in plain English</h2>
+    </div>
+    <div class="grid-2" style="gap:0;align-items:stretch;margin-bottom:28px;">
+      <div class="animate-in">
+        <div class="card" style="height:100%;border-radius:18px 0 0 18px;border-right:none;padding:30px;">
+          <div class="tag-before" style="margin-bottom:18px;">
+            <i class="fas fa-pen-to-square" style="color:#35a7e7;"></i>Your current value
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="padding:14px 18px;background:#f5f7fb;border-radius:10px;font-size:0.95rem;color:#0b1023;font-weight:500;">Polish</div>
+            <div style="padding:14px 18px;background:#f5f7fb;border-radius:10px;font-size:0.95rem;color:#0b1023;font-weight:500;">White British</div>
+          </div>
+        </div>
+      </div>
+      <div class="animate-in" style="display:flex;align-items:center;justify-content:center;position:relative;">
+        <div style="position:absolute;left:-22px;width:44px;height:44px;border-radius:50%;background:white;border:2px solid rgba(39,60,145,0.12);display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <i class="fas fa-arrow-right-long" style="color:#ec634b;"></i>
+        </div>
+        <div class="card" style="height:100%;width:100%;border-radius:0 18px 18px 0;padding:30px;background:linear-gradient(135deg,#e9f1fe,#fef8ea);border-color:rgba(39,60,145,0.1);">
+          <div class="tag-before" style="margin-bottom:18px;color:#273c91;">
+            <i class="fas fa-database" style="color:#273c91;"></i>Matching Civica value
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="padding:14px 18px;background:white;border:1px solid rgba(39,60,145,0.12);border-radius:10px;font-size:0.95rem;color:#273c91;font-weight:500;display:flex;align-items:center;justify-content:space-between;">Polish<i class="fas fa-chevron-down" style="color:rgba(11,16,35,0.3);font-size:0.8rem;"></i></div>
+            <div style="padding:14px 18px;background:white;border:1px solid rgba(39,60,145,0.12);border-radius:10px;font-size:0.95rem;color:#273c91;font-weight:500;display:flex;align-items:center;justify-content:space-between;">White - British<i class="fas fa-chevron-down" style="color:rgba(11,16,35,0.3);font-size:0.8rem;"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="animate-in">
+      <div class="grid-4" style="gap:16px;">
+        <div style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:rgba(11,16,35,0.65);">
+          <i class="fas fa-arrows-left-right" style="color:#273c91;"></i>Pick the Civica equivalent for each flagged value
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:rgba(11,16,35,0.65);">
+          <i class="fas fa-circle-minus" style="color:#a855f7;"></i>No match? Leave it blank
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:rgba(11,16,35,0.65);">
+          <i class="fas fa-clock" style="color:#f59e0b;"></i>Takes roughly 30 to 60 minutes
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:0.88rem;color:rgba(11,16,35,0.65);">
+          <i class="fas fa-rotate" style="color:#22c55e;"></i>Not set in stone: it can be redone later
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- SLIDE 9: TOPIC 4 - DATA EXPORT PROCESS -->
+<!-- Speaker note: Pre-empt the export/import wording once. Create-only today (no update/internals, like Bromcom). The round-trip student number is the whole point of the test. -->
+<!-- ============================== -->
+<div class="slide" data-slide="8">
+  <div class="slide-inner">
+    <div class="animate-in">
+      <div class="label" style="margin-bottom:14px;">Topic 4</div>
+      <h2 style="margin-bottom:8px;">Data Export Process</h2>
+      <p class="subtitle" style="font-size:1.05rem;margin-bottom:30px;">Sending an applicant from Admissions+ into Civica</p>
+    </div>
+    <div class="animate-in" style="margin-bottom:28px;">
+      <div class="flow-row" style="align-items:stretch;">
+        <div class="flow-box" style="flex:1;">
+          <div style="font-size:1.3rem;color:#273c91;margin-bottom:8px;"><i class="fas fa-folder-open"></i></div>
+          <div style="font-size:0.85rem;line-height:1.4;">Open <strong>Import Applications</strong><br><span style="color:rgba(11,16,35,0.4);font-size:0.78rem;">this is the "export", A+ to Civica</span></div>
+        </div>
+        <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="flow-box" style="flex:1;">
+          <div style="font-size:1.3rem;color:#35a7e7;margin-bottom:8px;"><i class="fas fa-list-check"></i></div>
+          <div style="font-size:0.85rem;line-height:1.4;">Choose the form and a completed applicant</div>
+        </div>
+        <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="flow-box" style="flex:1;">
+          <div style="font-size:1.3rem;color:#a855f7;margin-bottom:8px;"><i class="fas fa-sliders"></i></div>
+          <div style="font-size:0.85rem;line-height:1.4;">Pick the fields to send</div>
+        </div>
+        <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="flow-box" style="flex:1;">
+          <div style="font-size:1.3rem;color:#f59e0b;margin-bottom:8px;"><i class="fas fa-bars-progress"></i></div>
+          <div style="font-size:0.85rem;line-height:1.4;">Confirm, watch the live progress report</div>
+        </div>
+        <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="flow-box highlight" style="flex:1;">
+          <div style="font-size:1.3rem;margin-bottom:8px;"><i class="fas fa-id-badge"></i></div>
+          <div style="font-size:0.85rem;line-height:1.4;">The app creates the record in Civica and returns the new student number</div>
+        </div>
+      </div>
+    </div>
+    <div class="animate-in">
+      <div class="card card-accent" style="display:flex;align-items:center;gap:14px;padding:18px 26px;">
+        <i class="fas fa-circle-check" style="color:#22c55e;font-size:1.3rem;flex-shrink:0;"></i>
+        <span style="font-size:0.95rem;color:#273c91;font-weight:500;">Today the app creates new applicant records in Civica. The Civica student number it returns is your proof the write-back worked.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- SLIDE 10: LIVE DEMO - FIRST DATA EXPORT -->
+<!-- Speaker note: Use a live applicant, not test data. Ensure you are on the new build (manual installer if auto-update didn't pull it); re-tested at the 10:00 sync. If it errors live, narrate, fall back to the slide, follow up. -->
+<!-- ============================== -->
+<div class="slide" data-slide="9">
+  <div class="slide-inner" style="text-align:center;">
+    <div class="animate-in">
+      <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,rgba(39,60,145,0.08),rgba(236,99,75,0.08));display:flex;align-items:center;justify-content:center;margin:0 auto 36px;">
+        <i class="fas fa-play" style="font-size:2.5rem;color:#273c91;margin-left:6px;"></i>
+      </div>
+    </div>
+    <div class="animate-in">
+      <div class="label" style="margin-bottom:18px;">Live Demo</div>
+    </div>
+    <div class="animate-in">
+      <h2 style="margin-bottom:20px;">Live: first export, Admissions+ to Civica</h2>
+    </div>
+    <div class="animate-in">
+      <p class="subtitle" style="max-width:680px;margin:0 auto;font-size:1.2rem;">One clean applicant, created in Civica, student number returned to Admissions+</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- SLIDE 11: WHAT'S COMING NEXT (ROADMAP) -->
+<!-- Speaker note: Frame positively, roadmap not dated commitments. Don't offer to demo update flow. -->
+<!-- ============================== -->
+<div class="slide" data-slide="10">
+  <div class="slide-inner">
+    <div class="animate-in">
+      <div class="label" style="margin-bottom:18px;">Roadmap</div>
+      <h2 style="margin-bottom:32px;">Where we are heading</h2>
+    </div>
+    <div class="grid-2" style="gap:22px;">
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:28px;">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">
+            <div style="width:46px;height:46px;border-radius:14px;background:rgba(39,60,145,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-user-pen" style="color:#273c91;font-size:1.1rem;"></i>
+            </div>
+            <h3 style="font-size:1.1rem;">Update existing students</h3>
+          </div>
+          <p style="font-size:0.92rem;color:rgba(11,16,35,0.55);line-height:1.6;">Refresh records already in Civica, not just create new</p>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:28px;">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">
+            <div style="width:46px;height:46px;border-radius:14px;background:rgba(53,167,231,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-clone" style="color:#35a7e7;font-size:1.1rem;"></i>
+            </div>
+            <h3 style="font-size:1.1rem;">Duplicate matching</h3>
+          </div>
+          <p style="font-size:0.92rem;color:rgba(11,16,35,0.55);line-height:1.6;">Check Civica before creating, so no doubled-up records</p>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:28px;">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">
+            <div style="width:46px;height:46px;border-radius:14px;background:rgba(236,99,75,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-right-left" style="color:#ec634b;font-size:1.1rem;"></i>
+            </div>
+            <h3 style="font-size:1.1rem;">Civica to Admissions+</h3>
+          </div>
+          <p style="font-size:0.92rem;color:rgba(11,16,35,0.55);line-height:1.6;">Bring data back the other way (reverse sync)</p>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;padding:28px;">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">
+            <div style="width:46px;height:46px;border-radius:14px;background:rgba(34,197,94,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-book-open" style="color:#22c55e;font-size:1.1rem;"></i>
+            </div>
+            <h3 style="font-size:1.1rem;">Courses &amp; classes</h3>
+          </div>
+          <p style="font-size:0.92rem;color:rgba(11,16,35,0.55);line-height:1.6;">Import Civica courses and classes into Admissions+</p>
+        </div>
+      </div>
+    </div>
+    <div class="animate-in" style="margin-top:24px;text-align:center;">
+      <span style="font-size:0.9rem;color:rgba(11,16,35,0.45);">
+        <i class="fas fa-compass" style="color:#ec634b;margin-right:8px;"></i>Direction of travel: a fuller, two-way integration over time
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- SLIDE 12: SUPPORT AND NEXT STEPS -->
+<!-- Speaker note: Close warm. Confirm how to get help and what happens next. Handle Sir John Dean's endpoint blocker offline, not on this slide. -->
+<!-- ============================== -->
+<div class="slide" data-slide="11">
+  <div class="slide-inner">
+    <div class="animate-in" style="text-align:center;">
+      <div class="label" style="margin-bottom:16px;">Thank You</div>
+      <h2 style="margin-bottom:34px;">We're here to help</h2>
+    </div>
+    <div class="grid-3" style="gap:22px;margin-bottom:26px;">
+      <div class="animate-in">
+        <div class="card" style="height:100%;text-align:center;padding:30px 22px;">
+          <div class="icon-circle" style="background:rgba(39,60,145,0.1);color:#273c91;margin:0 auto 16px;">
+            <i class="fas fa-headset"></i>
+          </div>
+          <h3 style="font-size:1.05rem;margin-bottom:10px;">Support line</h3>
+          <div style="padding:10px 16px;background:#f5f7fb;border-radius:10px;font-size:0.95rem;color:#273c91;font-weight:600;">0203 667 0764</div>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;text-align:center;padding:30px 22px;">
+          <div class="icon-circle" style="background:rgba(53,167,231,0.1);color:#35a7e7;margin:0 auto 16px;">
+            <i class="fas fa-book"></i>
+          </div>
+          <h3 style="font-size:1.05rem;margin-bottom:10px;">Knowledge base</h3>
+          <div style="padding:10px 16px;background:#f5f7fb;border-radius:10px;font-size:0.88rem;color:#273c91;font-weight:600;line-height:1.5;">helpdesk.applicaa.com<br><span style="font-size:0.78rem;color:rgba(11,16,35,0.45);font-weight:500;">migrations: helpdesk.applicaa.com/mis-migrations</span></div>
+        </div>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="height:100%;text-align:center;padding:30px 22px;">
+          <div class="icon-circle" style="background:rgba(236,99,75,0.1);color:#ec634b;margin:0 auto 16px;">
+            <i class="fas fa-download"></i>
+          </div>
+          <h3 style="font-size:1.05rem;margin-bottom:10px;">App download</h3>
+          <div style="padding:10px 16px;background:#f5f7fb;border-radius:10px;font-size:0.9rem;color:#273c91;font-weight:600;">Automatic updates launch every time you open it, bringing new features and updates.</div>
+        </div>
+      </div>
+    </div>
+    <div class="animate-in" style="margin-bottom:14px;">
+      <div class="label" style="text-align:center;margin-bottom:12px;">Your contacts</div>
+      <div class="grid-2">
+        <div class="card" style="padding:18px 24px;">
+          <div style="font-size:1.05rem;font-weight:700;color:#273c91;">Irvin Go</div>
+          <div style="font-size:0.85rem;color:rgba(11,16,35,0.55);margin:2px 0 6px;">Integrations Project Manager</div>
+          <div style="font-size:0.9rem;color:#ec634b;font-weight:600;"><i class="fas fa-envelope" style="margin-right:8px;"></i>irvin@applicaa.com</div>
+        </div>
+        <div class="card" style="padding:18px 24px;">
+          <div style="font-size:1.05rem;font-weight:700;color:#273c91;">Andy Bradnock</div>
+          <div style="font-size:0.85rem;color:rgba(11,16,35,0.55);margin:2px 0 6px;">MIS Migrations Specialist</div>
+          <div style="font-size:0.9rem;color:#ec634b;font-weight:600;"><i class="fas fa-envelope" style="margin-right:8px;"></i>andy@applicaa.com</div>
+        </div>
+      </div>
+    </div>
+    <div class="animate-in">
+      <div class="card card-accent" style="display:flex;align-items:center;gap:14px;padding:18px 26px;margin-bottom:14px;">
+        <i class="fas fa-arrow-right" style="color:#273c91;font-size:1.1rem;flex-shrink:0;"></i>
+        <span style="font-size:0.95rem;color:#273c91;font-weight:500;">Next steps: we share the recording, then send each school its migration link to begin mapping</span>
+      </div>
+    </div>
+    <div class="animate-in" style="text-align:center;">
+      <span style="font-size:0.88rem;color:#ec634b;font-weight:500;">
+        <i class="fas fa-lightbulb" style="margin-right:8px;"></i>Planning tip: avoid starting a migration during enrolment week
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- Slide Panel Overlay -->
+<div class="slide-panel-overlay" id="slidePanel" onclick="if(event.target===this)toggleSlidePanel()">
+  <div class="slide-panel">
+    <div class="slide-panel-header">
+      <h3>Slides</h3>
+      <div class="nav-btn" onclick="toggleSlidePanel()" style="width:36px;height:36px;"><i class="fas fa-times"></i></div>
+    </div>
+    <div class="slide-panel-grid" id="slidePanelGrid"></div>
+  </div>
+</div>
+
+<script>
+// Slide navigation
+const slides = document.querySelectorAll('.slide');
+let current = 0;
+
+// Slide panel
+const slideTitles = [
+  'Title', 'Agenda', 'One Bridge', 'Configuration', 'Live: Configure',
+  'Supported Fields', 'Migration Journey', 'Mapping Step', 'Data Export',
+  'Live: Export', 'Roadmap', 'Support'
+];
+
+function buildSlidePanel() {
+  const grid = document.getElementById('slidePanelGrid');
+  grid.innerHTML = '';
+  slideTitles.forEach((title, i) => {
+    const thumb = document.createElement('div');
+    thumb.className = 'slide-thumb' + (i === current ? ' active' : '');
+    thumb.innerHTML = '<span class="thumb-num">' + (i + 1) + '</span>' + title;
+    thumb.onclick = () => { goTo(i); toggleSlidePanel(); };
+    grid.appendChild(thumb);
+  });
+}
+
+function toggleSlidePanel() {
+  const panel = document.getElementById('slidePanel');
+  if (panel.classList.contains('open')) {
+    panel.classList.remove('open');
+  } else {
+    buildSlidePanel();
+    panel.classList.add('open');
+  }
+}
+
+function goTo(n) {
+  if (n < 0 || n >= slides.length || n === current) return;
+
+  slides[current].classList.remove('active');
+  slides[current].classList.add('exit');
+
+  const prev = current;
+  current = n;
+
+  // Reset animations
+  slides[current].querySelectorAll('.animate-in').forEach(el => {
+    el.style.animation = 'none';
+    el.offsetHeight;
+    el.style.animation = '';
+  });
+
+  slides[current].classList.add('active');
+
+  setTimeout(() => slides[prev].classList.remove('exit'), 500);
+
+  // Update progress
+  document.getElementById('progressBar').style.width = ((current / (slides.length - 1)) * 100) + '%';
+  document.getElementById('slideCounter').textContent = (current + 1) + ' / ' + slides.length;
+}
+
+// Keyboard nav
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+    e.preventDefault();
+    goTo(current + 1);
+  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    e.preventDefault();
+    goTo(current - 1);
+  } else if (e.key === 'Home') {
+    e.preventDefault();
+    goTo(0);
+  } else if (e.key === 'End') {
+    e.preventDefault();
+    goTo(slides.length - 1);
+  } else if (e.key === 'Escape') {
+    const panel = document.getElementById('slidePanel');
+    if (panel.classList.contains('open')) {
+      e.preventDefault();
+      toggleSlidePanel();
+    }
+  }
+});
+
+// Touch/swipe
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', (e) => {
+  const diff = touchStartX - e.changedTouches[0].screenX;
+  if (Math.abs(diff) > 50) {
+    diff > 0 ? goTo(current + 1) : goTo(current - 1);
+  }
+});
+
+// Init
+document.getElementById('slideCounter').textContent = '1 / ' + slides.length;
+document.getElementById('progressBar').style.width = '0%';
+</script>
+
+</body>
+</html>
