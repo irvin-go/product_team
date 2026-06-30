@@ -215,6 +215,7 @@
   .dir-import { background: var(--tag-import-bg); color: var(--import-color); }
   .dir-both   { background: var(--tag-both-bg);   color: var(--both-color); }
   .dir-unavail { background: var(--tag-unavail-bg); color: var(--unavail-color); }
+  .dir-soon    { background: #e8ecf4; color: #4a5a8a; }
 
   /* Tables */
   .table-wrap {
@@ -736,28 +737,28 @@
     <!-- What's not included -->
     <div class="card">
       <span class="section-num">SECTION 11</span>
-      <h2>What's not included</h2>
-      <p>The following data types are <strong>available in the iSAMS API but not yet implemented</strong> in our integration. These are on our roadmap and can be prioritised based on demand:</p>
+      <h2>Coming soon</h2>
+      <p>We're actively expanding the iSAMS integration. The following data types are <strong>planned for upcoming releases</strong>:</p>
 
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Data type</th><th>Status</th><th>Notes</th></tr>
+            <tr><th>Data type</th><th>Status</th><th>What to expect</th></tr>
           </thead>
           <tbody>
-            <tr><td>Medical conditions</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>iSAMS Medical Centre API available but not yet integrated</td></tr>
-            <tr><td>Dietary needs</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>Can be collected on forms but not written to iSAMS</td></tr>
-            <tr><td>SEN status / needs</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>Can be collected on forms but not written to iSAMS</td></tr>
-            <tr><td>Consent records</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>Can be collected on forms but not written to iSAMS</td></tr>
-            <tr><td>Documents / attachments</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>iSAMS Documents API available but not yet integrated</td></tr>
-            <tr><td>Passport / visa details</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>iSAMS API available — relevant for international schools</td></tr>
-            <tr><td>Assessment / grades</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>iSAMS Gradebooks API available but not yet integrated</td></tr>
-            <tr><td>Attendance</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>iSAMS Registration API available but not yet integrated</td></tr>
+            <tr><td>Medical conditions</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Sync medical records between Admissions+ and iSAMS Medical Centre</td></tr>
+            <tr><td>Dietary needs</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Write dietary information collected on forms back to iSAMS</td></tr>
+            <tr><td>SEN status / needs</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Write SEN data collected on forms back to iSAMS</td></tr>
+            <tr><td>Consent records</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Write parental consent collected on forms back to iSAMS</td></tr>
+            <tr><td>Documents / attachments</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Transfer supporting documents between systems</td></tr>
+            <tr><td>Passport / visa details</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Sync passport and visa information — especially useful for international schools</td></tr>
+            <tr><td>Assessment / grades</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Import assessment data from iSAMS Gradebooks to support admissions decisions</td></tr>
+            <tr><td>Attendance</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Import attendance summaries from iSAMS Registration</td></tr>
           </tbody>
         </table>
       </div>
 
-      <p style="margin-top:0.75rem;">If any of these data types are important for your school's workflow, please speak to your account manager — we can advise on timelines and workarounds.</p>
+      <p style="margin-top:0.75rem;">Want to help shape what we build next? Let your account manager know which of these would make the biggest difference for your school.</p>
     </div>
 
     <!-- Direction key -->
