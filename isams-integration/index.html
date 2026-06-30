@@ -380,7 +380,7 @@
     <!-- How it works -->
     <div class="card">
       <h2>How the integration works</h2>
-      <p>Admissions+ connects to your iSAMS system through the <strong>iSAMS REST API</strong> using secure OAuth 2.0 authentication. Your school's API credentials (Client ID and Client Secret) are configured once in Admissions+, and all data transfer happens automatically in the background.</p>
+      <p>Admissions+ connects to your iSAMS system through the <strong>iSAMS REST API</strong> using secure OAuth 2.0 authentication. Your school's API credentials (Client ID and Client Secret) are configured once in Admissions+, and data transfers are initiated by staff from within Admissions+ when needed.</p>
 
       <h3>Data flow</h3>
       <div class="flow">
@@ -628,7 +628,7 @@
         <span class="lookup-pill">Custom Groups</span>
       </div>
 
-      <p style="margin-top:0.75rem;">These lists are refreshed automatically during the daily sync, so any changes you make in iSAMS appear in Admissions+ the next day.</p>
+      <p style="margin-top:0.75rem;">These lists are refreshed each time you run a data import, so any changes you make in iSAMS appear in Admissions+ after the next sync.</p>
     </div>
 
     <!-- Photos -->
@@ -700,7 +700,7 @@
       </div>
 
       <div class="warn note">
-        <p><strong>Please note:</strong> Medical conditions, dietary needs, SEN status, and consent records can be collected on your forms, but are not currently written back to iSAMS automatically. Your school staff will need to enter these updates in iSAMS manually. We are working to close these gaps.</p>
+        <p><strong>Please note:</strong> Medical conditions, dietary needs, SEN status, and consent records can be collected on your forms, but are not currently written back to iSAMS. Your school staff will need to enter these updates in iSAMS manually. We are working to close these gaps.</p>
       </div>
     </div>
 
@@ -728,7 +728,7 @@
       <h3>Sync schedule</h3>
       <ul>
         <li>Lookup data (languages, nationalities, etc.) syncs daily</li>
-        <li>Student and contact data imports and exports run on demand or on a scheduled basis</li>
+        <li>Student and contact data imports and exports are run on demand by staff from within Admissions+</li>
         <li>All transfers are logged and any errors are reported to your school admin</li>
       </ul>
     </div>
@@ -737,7 +737,7 @@
     <div class="card">
       <span class="section-num">SECTION 11</span>
       <h2>What's not included</h2>
-      <p>The following iSAMS data is <strong>not currently part of the integration</strong>, though the iSAMS API does support it:</p>
+      <p>The following data types are <strong>available in the iSAMS API but not yet implemented</strong> in our integration. These are on our roadmap and can be prioritised based on demand:</p>
 
       <div class="table-wrap">
         <table>
