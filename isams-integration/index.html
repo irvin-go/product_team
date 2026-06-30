@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iSAMS Integration — Scope &amp; Coverage</title>
+<style>
+  @font-face {
+    font-family: 'Charter';
+    src: local('Charter'), local('Georgia');
+    font-display: swap;
+  }
+
+  :root {
+    --ink: #1b2d3e;
+    --ink-secondary: #4a6274;
+    --ink-muted: #7b909f;
+    --accent: #1a6b7a;
+    --accent-light: #e6f2f4;
+    --surface: #f5f4f1;
+    --card: #ffffff;
+    --border: #d8d4ce;
+    --border-light: #eae7e2;
+    --export-color: #1a6b7a;
+    --import-color: #6b4c1a;
+    --both-color: #2d5a27;
+    --unavail-color: #8c6e6e;
+    --tag-export-bg: #e6f2f4;
+    --tag-import-bg: #f4ede2;
+    --tag-both-bg: #e6f0e4;
+    --tag-unavail-bg: #f0eaea;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--surface);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page-header {
+    background: var(--ink);
+    color: #fff;
+    padding: 3rem 2rem 2.5rem;
+  }
+
+  .page-header .container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .page-header .eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .page-header h1 {
+    font-family: Charter, Georgia, 'Times New Roman', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-header .subtitle {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.65);
+    max-width: 540px;
+    line-height: 1.5;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .content {
+    padding: 2rem 0 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    padding: 1.75rem 2rem;
+  }
+
+  .card h2 {
+    font-family: Charter, Georgia, 'Times New Roman', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .card h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-secondary);
+    margin: 1.25rem 0 0.6rem;
+    letter-spacing: 0.02em;
+  }
+
+  .card h3:first-of-type { margin-top: 0.25rem; }
+
+  .card p, .card li {
+    font-size: 0.88rem;
+    color: var(--ink-secondary);
+    line-height: 1.65;
+  }
+
+  .card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .card ul li {
+    padding: 0.25rem 0 0.25rem 1.1rem;
+    position: relative;
+  }
+
+  .card ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7rem;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 1.25rem 0;
+    overflow-x: auto;
+  }
+
+  .flow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+    min-width: 100px;
+  }
+
+  .flow-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1.5px solid rgba(26,107,122,0.2);
+  }
+
+  .flow-icon.isams { background: #e8edf3; color: #3b5998; border-color: rgba(59,89,152,0.2); }
+  .flow-icon.parent { background: #f4ede2; color: #6b4c1a; border-color: rgba(107,76,26,0.2); }
+
+  .flow-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--ink-secondary);
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+
+  .flow-sublabel {
+    font-size: 0.65rem;
+    color: var(--ink-muted);
+    text-align: center;
+    max-width: 90px;
+  }
+
+  .flow-arrow {
+    color: var(--ink-muted);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    padding: 0 0.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  /* Direction tags */
+  .dir-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .dir-export { background: var(--tag-export-bg); color: var(--export-color); }
+  .dir-import { background: var(--tag-import-bg); color: var(--import-color); }
+  .dir-both   { background: var(--tag-both-bg);   color: var(--both-color); }
+  .dir-unavail { background: var(--tag-unavail-bg); color: var(--unavail-color); }
+
+  /* Tables */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 0.75rem 0;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  thead th {
+    background: var(--surface);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-muted);
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+  }
+
+  tbody td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--ink-secondary);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  tbody tr:hover { background: rgba(245,244,241,0.5); }
+
+  td:first-child { color: var(--ink); font-weight: 500; }
+
+  td code {
+    font-size: 0.75rem;
+    background: var(--surface);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    color: var(--ink-secondary);
+    font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  }
+
+  /* Coverage summary */
+  .coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+  }
+
+  .coverage-item {
+    border: 1px solid var(--border-light);
+    border-radius: 5px;
+    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .coverage-item .label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ink-secondary);
+  }
+
+  .coverage-item .count {
+    font-family: Charter, Georgia, serif;
+    font-size: 1.6rem;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .coverage-item .detail {
+    font-size: 0.7rem;
+    color: var(--ink-muted);
+  }
+
+  /* Note callout */
+  .note {
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    padding: 0.85rem 1rem;
+    border-radius: 0 4px 4px 0;
+    margin: 0.75rem 0;
+  }
+
+  .note p {
+    font-size: 0.82rem;
+    color: var(--accent);
+    line-height: 1.55;
+  }
+
+  .note strong { font-weight: 600; }
+
+  .warn {
+    background: #fdf6ec;
+    border-left-color: #b8860b;
+  }
+  .warn p { color: #7a5a0a; }
+
+  /* Lookup pills */
+  .lookup-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0.5rem 0;
+  }
+
+  .lookup-pill {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.55rem;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 3px;
+    color: var(--ink-secondary);
+    font-weight: 500;
+  }
+
+  /* Section anchor */
+  .section-num {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.15rem;
+    display: block;
+  }
+
+  @media (max-width: 600px) {
+    .page-header { padding: 2rem 1.25rem 1.75rem; }
+    .container { padding: 0 1.25rem; }
+    .card { padding: 1.25rem; }
+    .page-header h1 { font-size: 1.5rem; }
+    .flow { flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+    .flow-arrow { display: none; }
+    .coverage-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="container">
+    <div class="eyebrow">Integration Guide</div>
+    <h1>iSAMS Integration — Scope &amp; Coverage</h1>
+    <p class="subtitle">Everything your school needs to know about how Admissions+ and Data+ connect with iSAMS, what data is supported, and how it flows.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content">
+
+    <!-- How it works -->
+    <div class="card">
+      <h2>How the integration works</h2>
+      <p>Admissions+ connects to your iSAMS system through the <strong>iSAMS REST API</strong> using secure OAuth 2.0 authentication. Your school's API credentials (Client ID and Client Secret) are configured once in Admissions+, and all data transfer happens automatically in the background.</p>
+
+      <h3>Data flow</h3>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-icon isams">&#x1f3eb;</div>
+          <span class="flow-label">iSAMS</span>
+          <span class="flow-sublabel">Your school MIS</span>
+        </div>
+        <div class="flow-arrow">&#x2192;</div>
+        <div class="flow-step">
+          <div class="flow-icon">&#x1f4cb;</div>
+          <span class="flow-label">Import</span>
+          <span class="flow-sublabel">Students, contacts, classes, lookups</span>
+        </div>
+        <div class="flow-arrow">&#x2192;</div>
+        <div class="flow-step">
+          <div class="flow-icon">A+</div>
+          <span class="flow-label">Admissions+</span>
+          <span class="flow-sublabel">Application forms &amp; management</span>
+        </div>
+        <div class="flow-arrow">&#x2192;</div>
+        <div class="flow-step">
+          <div class="flow-icon parent">&#x1f468;&#x200d;&#x1f469;&#x200d;&#x1f467;</div>
+          <span class="flow-label">Parents</span>
+          <span class="flow-sublabel">Review &amp; update via forms</span>
+        </div>
+        <div class="flow-arrow">&#x2192;</div>
+        <div class="flow-step">
+          <div class="flow-icon">&#x1f4e4;</div>
+          <span class="flow-label">Export</span>
+          <span class="flow-sublabel">Updated data written back</span>
+        </div>
+        <div class="flow-arrow">&#x2192;</div>
+        <div class="flow-step">
+          <div class="flow-icon isams">&#x1f3eb;</div>
+          <span class="flow-label">iSAMS</span>
+          <span class="flow-sublabel">Records updated</span>
+        </div>
+      </div>
+
+      <div class="note">
+        <p><strong>Safe by design:</strong> Admissions+ only ever creates new records or updates existing values in iSAMS — it never deletes or blanks data that is already there. Any data removal is always carried out in iSAMS by your school staff.</p>
+      </div>
+    </div>
+
+    <!-- Coverage at a glance -->
+    <div class="card">
+      <h2>Coverage at a glance</h2>
+      <div class="coverage-grid">
+        <div class="coverage-item">
+          <span class="label">Student fields</span>
+          <span class="count">22</span>
+          <span class="detail">Names, DOB, gender, contact, ethnicity, religion, languages, nationality, UPN</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Contact / parent fields</span>
+          <span class="count">19</span>
+          <span class="detail">Names, phone, email, address, relationship, occupation, parental responsibility</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">School history fields</span>
+          <span class="count">9</span>
+          <span class="detail">Previous school name, contact, address, dates</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Class fields</span>
+          <span class="count">4</span>
+          <span class="detail">Course name, class name, code, max size</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Custom fields (UDFs)</span>
+          <span class="count">Unlimited</span>
+          <span class="detail">Any custom field mapped in your iSAMS — read and write</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Student photos</span>
+          <span class="count">1</span>
+          <span class="detail">Photo upload to iSAMS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student fields -->
+    <div class="card">
+      <span class="section-num">SECTION 1</span>
+      <h2>Student fields</h2>
+      <p>These fields are transferred between a student's record in Admissions+ and their corresponding record in iSAMS.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>iSAMS field</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>First Name</td><td><code>forename</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Last Name</td><td><code>surname</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Middle Name</td><td><code>middleNames</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Date of Birth</td><td><code>dateOfBirth</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Gender</td><td><code>gender</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Ethnicity</td><td><code>ethnicity</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Religion</td><td><code>religion</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Email</td><td><code>personalEmailAddress</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Title</td><td><code>title</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Unique Pupil Number (UPN)</td><td><code>uniquePupilNumber</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Mobile Phone</td><td><code>mobileNumber</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Languages</td><td><code>languages</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Country of Residence</td><td><code>residentCountry</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Country of Birth</td><td><code>birthplace</code></td><td><span class="dir-tag dir-import">iSAMS → A+</span></td></tr>
+            <tr><td>Nationality</td><td><code>nationalities</code></td><td><span class="dir-tag dir-import">iSAMS → A+</span></td></tr>
+            <tr><td>Full Name</td><td><code>fullName</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>Preferred Name</td><td><code>preferredName</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>Country of Birth</td><td><code>birthplace</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>All Nationalities</td><td><code>nationalities</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>Boarder Status</td><td><code>boardingStatus</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>Enquiry Date</td><td><code>enquiryDate</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>Admission Status</td><td><code>admissionStatus</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Contact / parent fields -->
+    <div class="card">
+      <span class="section-num">SECTION 2</span>
+      <h2>Contact / parent fields</h2>
+      <p>Contact records are linked to students. When a parent submits or updates their details, these fields can be written back to iSAMS.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>iSAMS field</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>First Name</td><td><code>forename</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Last Name</td><td><code>surname</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Middle Name</td><td><code>middleNames</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Title</td><td><code>title</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Email</td><td><code>emailAddress</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Mobile Phone</td><td><code>mobileNumber</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Home Phone</td><td><code>telephoneNumber</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Work Phone</td><td><code>workTelephoneNumber</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Parental Responsibility</td><td><code>parentalResponsibility</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Relationship</td><td><code>relationship</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Same Address as Student</td><td><code>studentHome</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Occupation</td><td><code>profession</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Address Line 1</td><td><code>address1</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Address Line 2</td><td><code>address2</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Address Line 3</td><td><code>address3</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Postcode</td><td><code>postcode</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Town</td><td><code>town</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>County</td><td><code>county</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+            <tr><td>Country</td><td><code>country</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- School history -->
+    <div class="card">
+      <span class="section-num">SECTION 3</span>
+      <h2>School history (previous schools)</h2>
+      <p>When applicants or parents provide previous school details, this information can be sent to iSAMS.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>iSAMS field</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>School Name</td><td><code>schoolName</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>School Email</td><td><code>schoolEmail</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>School Telephone</td><td><code>schoolTelephone</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>School Website</td><td><code>schoolWebsite</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>Primary Contact</td><td><code>primaryContact</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>Postcode</td><td><code>postcode</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>Town</td><td><code>town</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>County</td><td><code>county</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+            <tr><td>Country</td><td><code>country</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Classes -->
+    <div class="card">
+      <span class="section-num">SECTION 4</span>
+      <h2>Classes and teaching sets</h2>
+      <p>Admissions+ imports your subjects, teaching sets, and class information from iSAMS so that students can be assigned to classes during the admissions process. Once assigned, class memberships can be written back.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>iSAMS field</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Course / Subject</td><td><code>name</code> (Course)</td><td><span class="dir-tag dir-import">iSAMS → A+</span></td></tr>
+            <tr><td>Class Name</td><td><code>name</code> (Clazz)</td><td><span class="dir-tag dir-import">iSAMS → A+</span></td></tr>
+            <tr><td>Class Code</td><td><code>code</code></td><td><span class="dir-tag dir-import">iSAMS → A+</span></td></tr>
+            <tr><td>Maximum Class Size</td><td><code>maxSize</code></td><td><span class="dir-tag dir-import">iSAMS → A+</span></td></tr>
+            <tr><td>Student–Set Assignment</td><td><code>setList</code></td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Custom fields (UDFs) -->
+    <div class="card">
+      <span class="section-num">SECTION 5</span>
+      <h2>Custom fields (User Defined Fields)</h2>
+      <p>Admissions+ fully supports iSAMS custom fields. Any User Defined Field you've configured in iSAMS can be mapped to an Admissions+ form field, and data flows in both directions.</p>
+
+      <h3>What's supported</h3>
+      <ul>
+        <li><strong>Read from iSAMS</strong> — Custom field values are imported alongside student records, so existing data appears pre-populated in forms</li>
+        <li><strong>Write to iSAMS</strong> — When parents or applicants fill in custom fields on your forms, the values are written back to the matching UDF in iSAMS</li>
+        <li><strong>Applicants and students</strong> — UDFs work for both iSAMS applicant records and student records</li>
+        <li><strong>Mapping</strong> — Fields are matched using the iSAMS custom field identifier, so the right data goes to the right place</li>
+      </ul>
+
+      <div class="note">
+        <p><strong>How to set up:</strong> Map your iSAMS custom fields in the Admissions+ field mapping screen. Each iSAMS UDF is identified by its field ID — select the matching Admissions+ form field, and the integration handles the rest.</p>
+      </div>
+    </div>
+
+    <!-- Lookup data -->
+    <div class="card">
+      <span class="section-num">SECTION 6</span>
+      <h2>Lookup data (reference lists)</h2>
+      <p>Admissions+ imports your iSAMS reference lists so that dropdowns and selection fields match your MIS exactly. This keeps data consistent across systems.</p>
+
+      <h3>Imported lookup lists</h3>
+      <div class="lookup-list">
+        <span class="lookup-pill">Languages</span>
+        <span class="lookup-pill">Titles</span>
+        <span class="lookup-pill">Nationalities</span>
+        <span class="lookup-pill">Countries</span>
+        <span class="lookup-pill">Ethnicity</span>
+        <span class="lookup-pill">Religions</span>
+        <span class="lookup-pill">Admission Statuses</span>
+        <span class="lookup-pill">Contact Types</span>
+        <span class="lookup-pill">Boarding Statuses</span>
+        <span class="lookup-pill">Year Groups</span>
+        <span class="lookup-pill">School Terms</span>
+        <span class="lookup-pill">School Forms</span>
+        <span class="lookup-pill">Custom Groups</span>
+      </div>
+
+      <p style="margin-top:0.75rem;">These lists are refreshed automatically during the daily sync, so any changes you make in iSAMS appear in Admissions+ the next day.</p>
+    </div>
+
+    <!-- Photos -->
+    <div class="card">
+      <span class="section-num">SECTION 7</span>
+      <h2>Student photos</h2>
+      <p>Admissions+ can upload student photos to iSAMS. When a parent submits a photo as part of their application, it can be included in the data transfer to iSAMS.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Capability</th><th>Direction</th><th>Details</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Photo upload</td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td><td>Uploaded via the iSAMS Students API photo endpoint</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Student groups -->
+    <div class="card">
+      <span class="section-num">SECTION 8</span>
+      <h2>Student groups</h2>
+      <p>Admissions+ can create custom student groups in iSAMS and assign students to them. This is useful for organising admitted students into cohorts, year groups, or other groupings that your school uses.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Capability</th><th>Direction</th><th>Details</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Import existing groups</td><td><span class="dir-tag dir-import">iSAMS → A+</span></td><td>Custom student groups imported from iSAMS</td></tr>
+            <tr><td>Create new groups</td><td><span class="dir-tag dir-export">A+ → iSAMS</span></td><td>New groups and student assignments sent to iSAMS</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Data+ lifecycle -->
+    <div class="card">
+      <span class="section-num">SECTION 9</span>
+      <h2>Data+ annual review cycle</h2>
+      <p>For schools using Data+, the integration supports the full round-trip: export student data from iSAMS, send review forms to parents, and write their updates back.</p>
+
+      <h3>What parents can update (and what syncs back)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Data parents can review</th><th>Updates written back to iSAMS?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Student name, DOB, gender</td><td><span class="dir-tag dir-both">Yes</span></td></tr>
+            <tr><td>Student email and phone</td><td><span class="dir-tag dir-both">Yes</span></td></tr>
+            <tr><td>Student ethnicity, religion, languages</td><td><span class="dir-tag dir-both">Yes</span></td></tr>
+            <tr><td>Parent/guardian names and contact details</td><td><span class="dir-tag dir-both">Yes</span></td></tr>
+            <tr><td>Parent/guardian address</td><td><span class="dir-tag dir-both">Yes</span></td></tr>
+            <tr><td>Relationship and parental responsibility</td><td><span class="dir-tag dir-both">Yes</span></td></tr>
+            <tr><td>Occupation</td><td><span class="dir-tag dir-both">Yes</span></td></tr>
+            <tr><td>Custom fields (UDFs)</td><td><span class="dir-tag dir-both">Yes</span></td></tr>
+            <tr><td>Previous school history</td><td><span class="dir-tag dir-both">Yes</span></td></tr>
+            <tr><td>Medical conditions</td><td><span class="dir-tag dir-unavail">Not currently synced</span></td></tr>
+            <tr><td>Dietary needs / allergies</td><td><span class="dir-tag dir-unavail">Not currently synced</span></td></tr>
+            <tr><td>SEN status and needs</td><td><span class="dir-tag dir-unavail">Not currently synced</span></td></tr>
+            <tr><td>Consent records</td><td><span class="dir-tag dir-unavail">Not currently synced</span></td></tr>
+            <tr><td>GP / medical practice</td><td><span class="dir-tag dir-unavail">Not currently synced</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warn note">
+        <p><strong>Please note:</strong> Medical conditions, dietary needs, SEN status, and consent records can be collected on your forms, but are not currently written back to iSAMS automatically. Your school staff will need to enter these updates in iSAMS manually. We are working to close these gaps.</p>
+      </div>
+    </div>
+
+    <!-- Setup requirements -->
+    <div class="card">
+      <span class="section-num">SECTION 10</span>
+      <h2>Setup requirements</h2>
+
+      <h3>What you need from iSAMS</h3>
+      <ul>
+        <li><strong>API Client ID</strong> — your iSAMS API application identifier</li>
+        <li><strong>API Client Secret</strong> — your iSAMS API application secret</li>
+        <li><strong>School ID</strong> — your iSAMS school identifier (the subdomain part of your iSAMS URL, e.g. <code>yourschool</code> from <code>yourschool.isams.cloud</code>)</li>
+        <li><strong>Active API subscription</strong> — your iSAMS account must have an active API Services Manager subscription</li>
+      </ul>
+
+      <h3>Hosting variants supported</h3>
+      <div class="lookup-list">
+        <span class="lookup-pill">yourschool.isams.cloud</span>
+        <span class="lookup-pill">yourschool.edgen.cloud</span>
+        <span class="lookup-pill">yourschool.isamshosting.cloud</span>
+        <span class="lookup-pill">Custom endpoint URL</span>
+      </div>
+
+      <h3>Sync schedule</h3>
+      <ul>
+        <li>Lookup data (languages, nationalities, etc.) syncs daily</li>
+        <li>Student and contact data imports and exports run on demand or on a scheduled basis</li>
+        <li>All transfers are logged and any errors are reported to your school admin</li>
+      </ul>
+    </div>
+
+    <!-- What's not included -->
+    <div class="card">
+      <span class="section-num">SECTION 11</span>
+      <h2>What's not included</h2>
+      <p>The following iSAMS data is <strong>not currently part of the integration</strong>, though the iSAMS API does support it:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Data type</th><th>Status</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Medical conditions</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>iSAMS Medical Centre API available but not yet integrated</td></tr>
+            <tr><td>Dietary needs</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>Can be collected on forms but not written to iSAMS</td></tr>
+            <tr><td>SEN status / needs</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>Can be collected on forms but not written to iSAMS</td></tr>
+            <tr><td>Consent records</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>Can be collected on forms but not written to iSAMS</td></tr>
+            <tr><td>Documents / attachments</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>iSAMS Documents API available but not yet integrated</td></tr>
+            <tr><td>Passport / visa details</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>iSAMS API available — relevant for international schools</td></tr>
+            <tr><td>Assessment / grades</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>iSAMS Gradebooks API available but not yet integrated</td></tr>
+            <tr><td>Attendance</td><td><span class="dir-tag dir-unavail">Not synced</span></td><td>iSAMS Registration API available but not yet integrated</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin-top:0.75rem;">If any of these data types are important for your school's workflow, please speak to your account manager — we can advise on timelines and workarounds.</p>
+    </div>
+
+    <!-- Direction key -->
+    <div class="card" style="background: var(--surface); border-color: var(--border);">
+      <h2 style="border-bottom-color: var(--border);">Direction key</h2>
+      <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:0.25rem;">
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <span class="dir-tag dir-both">Both ↔</span>
+          <span style="font-size:0.8rem; color:var(--ink-secondary);">Data flows in both directions</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <span class="dir-tag dir-export">A+ → iSAMS</span>
+          <span style="font-size:0.8rem; color:var(--ink-secondary);">Admissions+ writes to iSAMS</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <span class="dir-tag dir-import">iSAMS → A+</span>
+          <span style="font-size:0.8rem; color:var(--ink-secondary);">Imported from iSAMS</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <span class="dir-tag dir-unavail">Not synced</span>
+          <span style="font-size:0.8rem; color:var(--ink-secondary);">Not currently part of the integration</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body></html>
