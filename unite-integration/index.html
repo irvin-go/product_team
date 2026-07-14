@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UNIT-e Integration — Scope &amp; Coverage</title>
+<style>
+  @font-face {
+    font-family: 'Charter';
+    src: local('Charter'), local('Georgia');
+    font-display: swap;
+  }
+
+  :root {
+    --ink: #1b2d3e;
+    --ink-secondary: #4a6274;
+    --ink-muted: #7b909f;
+    --accent: #1a6b7a;
+    --accent-light: #e6f2f4;
+    --surface: #f5f4f1;
+    --card: #ffffff;
+    --border: #d8d4ce;
+    --border-light: #eae7e2;
+    --export-color: #1a6b7a;
+    --import-color: #6b4c1a;
+    --both-color: #2d5a27;
+    --unavail-color: #8c6e6e;
+    --tag-export-bg: #e6f2f4;
+    --tag-import-bg: #f4ede2;
+    --tag-both-bg: #e6f0e4;
+    --tag-unavail-bg: #f0eaea;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--surface);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page-header {
+    background: var(--ink);
+    color: #fff;
+    padding: 3rem 2rem 2.5rem;
+  }
+
+  .page-header .container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .page-header .eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .page-header h1 {
+    font-family: Charter, Georgia, 'Times New Roman', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-header .subtitle {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.65);
+    max-width: 540px;
+    line-height: 1.5;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .content {
+    padding: 2rem 0 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    padding: 1.75rem 2rem;
+  }
+
+  .card h2 {
+    font-family: Charter, Georgia, 'Times New Roman', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .card h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-secondary);
+    margin: 1.25rem 0 0.6rem;
+    letter-spacing: 0.02em;
+  }
+
+  .card h3:first-of-type { margin-top: 0.25rem; }
+
+  .card p, .card li {
+    font-size: 0.88rem;
+    color: var(--ink-secondary);
+    line-height: 1.65;
+  }
+
+  .card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .card ul li {
+    padding: 0.25rem 0 0.25rem 1.1rem;
+    position: relative;
+  }
+
+  .card ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7rem;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 1.25rem 0;
+    overflow-x: auto;
+  }
+
+  .flow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+    min-width: 100px;
+  }
+
+  .flow-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1.5px solid rgba(26,107,122,0.2);
+  }
+
+  .flow-icon.unite { background: #e8edf3; color: #3b5998; border-color: rgba(59,89,152,0.2); }
+  .flow-icon.parent { background: #f4ede2; color: #6b4c1a; border-color: rgba(107,76,26,0.2); }
+  .flow-icon.app { background: #eee8f4; color: #6b4c8a; border-color: rgba(107,76,138,0.2); }
+
+  .flow-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--ink-secondary);
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+
+  .flow-sublabel {
+    font-size: 0.65rem;
+    color: var(--ink-muted);
+    text-align: center;
+    max-width: 90px;
+  }
+
+  .flow-arrow {
+    color: var(--ink-muted);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    padding: 0 0.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  /* Direction tags */
+  .dir-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .dir-export { background: var(--tag-export-bg); color: var(--export-color); }
+  .dir-import { background: var(--tag-import-bg); color: var(--import-color); }
+  .dir-both   { background: var(--tag-both-bg);   color: var(--both-color); }
+  .dir-unavail { background: var(--tag-unavail-bg); color: var(--unavail-color); }
+  .dir-soon    { background: #e8ecf4; color: #4a5a8a; }
+
+  /* Tables */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 0.75rem 0;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  thead th {
+    background: var(--surface);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-muted);
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+  }
+
+  tbody td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--ink-secondary);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  tbody tr:hover { background: rgba(245,244,241,0.5); }
+
+  td:first-child { color: var(--ink); font-weight: 500; }
+
+  td code {
+    font-size: 0.75rem;
+    background: var(--surface);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    color: var(--ink-secondary);
+    font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  }
+
+  /* Coverage summary */
+  .coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+  }
+
+  .coverage-item {
+    border: 1px solid var(--border-light);
+    border-radius: 5px;
+    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .coverage-item .label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ink-secondary);
+  }
+
+  .coverage-item .count {
+    font-family: Charter, Georgia, serif;
+    font-size: 1.6rem;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .coverage-item .detail {
+    font-size: 0.7rem;
+    color: var(--ink-muted);
+  }
+
+  /* Note callout */
+  .note {
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    padding: 0.85rem 1rem;
+    border-radius: 0 4px 4px 0;
+    margin: 0.75rem 0;
+  }
+
+  .note p {
+    font-size: 0.82rem;
+    color: var(--accent);
+    line-height: 1.55;
+  }
+
+  .note strong { font-weight: 600; }
+
+  .warn {
+    background: #fdf6ec;
+    border-left-color: #b8860b;
+  }
+  .warn p { color: #7a5a0a; }
+
+  /* Lookup pills */
+  .lookup-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0.5rem 0;
+  }
+
+  .lookup-pill {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.55rem;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 3px;
+    color: var(--ink-secondary);
+    font-weight: 500;
+  }
+
+  /* Section anchor */
+  .section-num {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.15rem;
+    display: block;
+  }
+
+  @media (max-width: 600px) {
+    .page-header { padding: 2rem 1.25rem 1.75rem; }
+    .container { padding: 0 1.25rem; }
+    .card { padding: 1.25rem; }
+    .page-header h1 { font-size: 1.5rem; }
+    .flow { flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+    .flow-arrow { display: none; }
+    .coverage-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="container">
+    <div class="eyebrow">Integration Guide</div>
+    <h1>UNIT-e Integration — Scope &amp; Coverage</h1>
+    <p class="subtitle">Everything your college needs to know about how Admissions+ connects with UNIT-e, what data is supported, and how it flows.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content">
+
+    <!-- How it works -->
+    <div class="card">
+      <h2>How the integration works</h2>
+      <p>Admissions+ connects to your UNIT-e system through the <strong>Applicaa UNIT-e Integration App</strong>, a lightweight Windows application installed on your college network. The app securely bridges Admissions+ and your UNIT-e system, transferring applicant, contact, and course data using the UNIT-e WebAPI.</p>
+
+      <h3>Data flow</h3>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-icon parent">&#x1f468;&#x200d;&#x1f469;&#x200d;&#x1f467;</div>
+          <span class="flow-label">Parents</span>
+          <span class="flow-sublabel">Submit applications &amp; forms</span>
+        </div>
+        <div class="flow-arrow">&#x2192;</div>
+        <div class="flow-step">
+          <div class="flow-icon">A+</div>
+          <span class="flow-label">Admissions+</span>
+          <span class="flow-sublabel">Application forms &amp; management</span>
+        </div>
+        <div class="flow-arrow">&#x2192;</div>
+        <div class="flow-step">
+          <div class="flow-icon app">&#x1f4bb;</div>
+          <span class="flow-label">Integration App</span>
+          <span class="flow-sublabel">Desktop bridge on your network</span>
+        </div>
+        <div class="flow-arrow">&#x2192;</div>
+        <div class="flow-step">
+          <div class="flow-icon unite">&#x1f3eb;</div>
+          <span class="flow-label">UNIT-e</span>
+          <span class="flow-sublabel">Students, applications &amp; courses</span>
+        </div>
+      </div>
+
+      <h3>Applicant matching</h3>
+      <p>Before importing, each applicant is automatically sorted into one of two groups so that no duplicate records are created:</p>
+      <ul>
+        <li><strong>New applicants</strong> — no existing UNIT-e record; a brand-new student and application is created in UNIT-e</li>
+        <li><strong>Existing applicants</strong> — already matched to a UNIT-e record; the existing student is updated and a new application is linked</li>
+      </ul>
+
+      <div class="note">
+        <p><strong>Safe by design:</strong> For student and contact data, Admissions+ only ever creates new records or updates existing values in UNIT-e — it does not delete a student's personal or contact records. Lookup values that UNIT-e doesn't recognise are skipped with a warning rather than causing the import to fail.</p>
+      </div>
+    </div>
+
+    <!-- Coverage at a glance -->
+    <div class="card">
+      <h2>Coverage at a glance</h2>
+      <div class="coverage-grid">
+        <div class="coverage-item">
+          <span class="label">Personal details</span>
+          <span class="count">16</span>
+          <span class="detail">Names, DOB, gender, ethnicity, religion, nationality, languages, disability, travel</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Identifiers</span>
+          <span class="count">3</span>
+          <span class="detail">Student reference, ULN, student code</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Contact details</span>
+          <span class="count">4</span>
+          <span class="detail">Email, home phone, mobile, home address</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Emergency contacts</span>
+          <span class="count">Up to 2</span>
+          <span class="detail">Name, relationship, phones, address, email</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Application data</span>
+          <span class="count">2</span>
+          <span class="detail">Date submitted, enrolment date</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">School history</span>
+          <span class="count">1</span>
+          <span class="detail">Previous school matched to UNIT-e</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Courses</span>
+          <span class="count">3</span>
+          <span class="detail">Course mapping with status codes — interest, offer, enrolled</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Lookup lists</span>
+          <span class="count">13</span>
+          <span class="detail">Reference lists synced from UNIT-e into Admissions+</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Personal details -->
+    <div class="card">
+      <span class="section-num">SECTION 1</span>
+      <h2>Student personal details</h2>
+      <p>These fields are transferred from a student's record in Admissions+ to their corresponding record in UNIT-e. Lookup-type fields are validated against your live UNIT-e lookup tables before import.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>UNIT-e mapping</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Legal Forename</td><td>First + Middle name combined (max 255)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Legal Surname</td><td>Text (max 255)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Preferred Forename</td><td>Text (max 255)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Date of Birth</td><td>Date (dd-MMM-yyyy)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Gender</td><td>Lookup</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Title</td><td>Lookup</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Religion</td><td>Lookup</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Nationality</td><td>Lookup</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Country of Birth</td><td>Lookup (Country)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Ethnicity</td><td>Lookup</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>First Language</td><td>Lookup (Language)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Home Language</td><td>Lookup (Language)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Disability</td><td>Lookup (first value used)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Mode of Travel</td><td>Lookup (first value used)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Service Children Education</td><td>Lookup</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Address Area</td><td>Lookup</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Identifiers -->
+    <div class="card">
+      <span class="section-num">SECTION 2</span>
+      <h2>Student identifiers</h2>
+      <p>Student identifiers are exported from Admissions+ to UNIT-e. The student reference is generated automatically using your UNIT-e numbering rules.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>UNIT-e mapping</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Student Reference</td><td>Auto-generated — surname prefix + application year + next number (e.g. TES202600520)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Unique Learner Number (ULN)</td><td>Text</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Student Code</td><td>Text</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Contact details -->
+    <div class="card">
+      <span class="section-num">SECTION 3</span>
+      <h2>Contact details</h2>
+      <p>Student contact details are exported to UNIT-e. Existing address and telephone records are updated in place where possible, to avoid duplicates.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>UNIT-e mapping</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Email Address</td><td>PersonAddress (Email) record</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Home Telephone</td><td><code>CurrentHomeTelephone</code></td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Mobile Telephone</td><td><code>StudentMobileTelephone</code></td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Home Address</td><td>Lines 1&#x2013;3, Postcode, Country (validated) — PersonAddress record</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Emergency contacts -->
+    <div class="card">
+      <span class="section-num">SECTION 4</span>
+      <h2>Emergency contacts / next of kin</h2>
+      <p>Up to two emergency contacts (Priority 1 and Priority 2) submitted by parents are exported to UNIT-e and linked to the student record.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>UNIT-e mapping</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Contact Name</td><td>Priority 1 &amp; Priority 2 contacts</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Relationship</td><td>Lookup (validated)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Contact Phones (Day / Evening / Mobile)</td><td>Stored in NOK PersonAddress</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Contact Home Address</td><td>Stored in Letter PersonAddress</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Contact Email</td><td>Stored in Email PersonAddress</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Application data -->
+    <div class="card">
+      <span class="section-num">SECTION 5</span>
+      <h2>Application data</h2>
+      <p>Application-level dates are exported to UNIT-e when an applicant is imported.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>UNIT-e mapping</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Date Submitted</td><td><code>Tier4UpdateDate</code></td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Enrolment Date</td><td>Derived from Expected Year of Entry (30 Sep of intake year)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <p><strong>Default values applied on every import:</strong> each imported applicant is flagged as a student (<code>Is Student = true</code>), given an active student status (<code>A</code>), and assigned the default promotion / offer type code (<code>YTBD</code>) on the new UNIT-e application.</p>
+      </div>
+    </div>
+
+    <!-- School history -->
+    <div class="card">
+      <span class="section-num">SECTION 6</span>
+      <h2>School history (previous school)</h2>
+      <p>When applicants provide previous school details, the school is matched to a UNIT-e establishment and exported.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>UNIT-e mapping</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Previous School</td><td>Matched by (1) LA Code + Establishment No., (2) URN, or (3) exact name</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Courses -->
+    <div class="card">
+      <span class="section-num">SECTION 7</span>
+      <h2>Courses and status mapping</h2>
+      <p>Admissions+ courses are mapped to UNIT-e modules before import. The system auto-matches UNIT-e course reference codes to your Admissions+ Provider Course IDs, and saved mappings are restored automatically so you don't need to re-map on every import.</p>
+
+      <h3>Course status mapping</h3>
+      <p>Each Admissions+ course status is exported as the matching UNIT-e status code:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Admissions+ status</th><th>UNIT-e code</th><th>UNIT-e status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Interested (Application Form Subjects)</td><td><code>O</code></td><td>Original Application</td></tr>
+            <tr><td>Offer (Add to Offer List)</td><td><code>I</code></td><td>Interview Application</td></tr>
+            <tr><td>Enrolled (Confirmed Subjects)</td><td><code>E</code></td><td>Enrolment Application</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>How course sync behaves</h3>
+      <ul>
+        <li><strong>Duplicate prevention</strong> — courses already present in UNIT-e with the same module and status are skipped</li>
+        <li><strong>Keeps courses aligned</strong> — course entries removed in Admissions+ are cleared from UNIT-e before new courses are imported, so both systems stay in step</li>
+        <li><strong>Smart warning</strong> — if you try to import courses for applicants who haven't been imported yet, the app warns you and offers to import them first</li>
+      </ul>
+    </div>
+
+    <!-- Lookup data -->
+    <div class="card">
+      <span class="section-num">SECTION 8</span>
+      <h2>Lookup data (reference lists)</h2>
+      <p>A dedicated Sync Lookups screen imports your UNIT-e reference lists into Admissions+, so that application form dropdowns match valid UNIT-e values exactly. Only active options are included.</p>
+
+      <h3>Imported lookup lists</h3>
+      <div class="lookup-list">
+        <span class="lookup-pill">Gender</span>
+        <span class="lookup-pill">Title</span>
+        <span class="lookup-pill">Nationality</span>
+        <span class="lookup-pill">Religion</span>
+        <span class="lookup-pill">Ethnicity</span>
+        <span class="lookup-pill">Disability</span>
+        <span class="lookup-pill">Country</span>
+        <span class="lookup-pill">First Language</span>
+        <span class="lookup-pill">Home Language</span>
+        <span class="lookup-pill">Mode of Travel</span>
+        <span class="lookup-pill">Service Children Education</span>
+        <span class="lookup-pill">Relationship to Student</span>
+        <span class="lookup-pill">Address Area</span>
+      </div>
+
+      <p style="margin-top:0.75rem;">The sync downloads active options from UNIT-e and applies them to Admissions+ in a single operation, with per-item success reporting.</p>
+    </div>
+
+    <!-- Write-back -->
+    <div class="card">
+      <span class="section-num">SECTION 9</span>
+      <h2>Data written back to Admissions+</h2>
+      <p>After each successful import, UNIT-e record identifiers are written back to Admissions+. This keeps both systems linked, so future imports update the same records instead of creating duplicates.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Data written back</th><th>Where it goes in Admissions+</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>UNIT-e Student ID</td><td><code>external_mis_person_id</code> — links future imports to the existing student</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>UNIT-e Application ID</td><td><code>external_mis_id</code> — identifies the linked application record</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>UNIT-e Address ID</td><td><code>mis_address_id</code> — identifies the linked address record</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>Student Reference</td><td><code>external_mis_reference_number</code> — the generated UNIT-e reference</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>UNIT-e Course ID (per course)</td><td><code>external_mis_id</code> on each course — restores mapping next time</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>Import reports &amp; logs</td><td>HTML report and log files uploaded to Admissions+ after each run</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Setup requirements -->
+    <div class="card">
+      <span class="section-num">SECTION 10</span>
+      <h2>Setup requirements</h2>
+
+      <h3>What you need from UNIT-e</h3>
+      <ul>
+        <li><strong>WebAPI access</strong> — your UNIT-e WebAPI endpoint URL (e.g. <code>uniteapi.yourcollege.ac.uk</code>)</li>
+        <li><strong>API credentials</strong> — a WebAPI login that returns a session key for the integration</li>
+      </ul>
+
+      <h3>What you need from Admissions+</h3>
+      <ul>
+        <li><strong>Admissions+ login</strong> — email, password, and your college subdomain</li>
+        <li><strong>Integration App installer</strong> — downloaded from the Admissions+ admin panel</li>
+      </ul>
+
+      <h3>IT requirements</h3>
+      <ul>
+        <li><strong>Windows desktop</strong> — the Integration App runs on Windows</li>
+        <li><strong>Network access</strong> — reach both your Admissions+ site and your UNIT-e WebAPI host</li>
+      </ul>
+
+      <h3>How syncs work</h3>
+      <ul>
+        <li>Data transfers are initiated manually from the Integration App by staff</li>
+        <li>Expired UNIT-e sessions are detected and refreshed automatically, preventing mid-import failures</li>
+        <li>The app auto-updates on each launch and shows a changelog when a new version is available</li>
+        <li>Every import produces a per-student report showing successes, warnings, and errors — viewable in-app or downloadable</li>
+      </ul>
+    </div>
+
+    <!-- Coming soon -->
+    <div class="card">
+      <span class="section-num">SECTION 11</span>
+      <h2>Coming soon</h2>
+      <p>We're actively expanding the UNIT-e integration. The following capabilities are <strong>planned for upcoming releases</strong>:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Capability</th><th>Status</th><th>What to expect</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Application status sync</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Automatically update the UNIT-e student application status from the applicant's current Admissions+ stage (offer, interview, enrolled, and more)</td></tr>
+            <tr><td>Classes import</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Import class and group registrations (timetable classes) into UNIT-e, alongside course modules</td></tr>
+            <tr><td>Advanced student matching</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Smarter duplicate detection using name + date of birth, National Insurance number, mobile, email, and postcode</td></tr>
+            <tr><td>Export students to Admissions+</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Reverse sync — pull existing UNIT-e students into Admissions+ to invite internal students (e.g. Year 11s applying for Sixth Form) without re-applying from scratch</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin-top:0.75rem;">Want to help shape what we build next? Let your account manager know which of these would make the biggest difference for your college.</p>
+    </div>
+
+    <!-- Direction key -->
+    <div class="card" style="background: var(--surface); border-color: var(--border);">
+      <h2 style="border-bottom-color: var(--border);">Direction key</h2>
+      <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:0.25rem;">
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span>
+          <span style="font-size:0.8rem; color:var(--ink-secondary);">Admissions+ writes to UNIT-e</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <span class="dir-tag dir-import">UNIT-e &#x2192; A+</span>
+          <span style="font-size:0.8rem; color:var(--ink-secondary);">Imported from UNIT-e</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <span class="dir-tag dir-soon">Coming soon</span>
+          <span style="font-size:0.8rem; color:var(--ink-secondary);">Planned for an upcoming release</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body></html>
