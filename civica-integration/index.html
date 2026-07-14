@@ -422,13 +422,13 @@
       <div class="coverage-grid">
         <div class="coverage-item">
           <span class="label">Student fields</span>
-          <span class="count">20</span>
-          <span class="detail">Names, DOB, gender, contact, ethnicity, religion, languages, nationality, GP</span>
+          <span class="count">16</span>
+          <span class="detail">Names, DOB, gender, phone, ethnicity, religion, languages, nationality</span>
         </div>
         <div class="coverage-item">
           <span class="label">Student identifiers</span>
           <span class="count">4</span>
-          <span class="detail">ULN, UPN, NIN, UCI</span>
+          <span class="detail">ULN, UPN, NIN, UCN</span>
         </div>
         <div class="coverage-item">
           <span class="label">Contact / parent fields</span>
@@ -441,24 +441,14 @@
           <span class="detail">Address lines, postcode, town, country</span>
         </div>
         <div class="coverage-item">
-          <span class="label">Application &amp; SEN</span>
-          <span class="count">5</span>
-          <span class="detail">Application year, SEN status, disability, notes</span>
-        </div>
-        <div class="coverage-item">
-          <span class="label">Courses</span>
-          <span class="count">5</span>
-          <span class="detail">Course code, status, priority, year — import &amp; export</span>
+          <span class="label">Welfare</span>
+          <span class="count">1</span>
+          <span class="detail">Disability</span>
         </div>
         <div class="coverage-item">
           <span class="label">Education history</span>
           <span class="count">4</span>
           <span class="detail">Previous school, dates attended</span>
-        </div>
-        <div class="coverage-item">
-          <span class="label">Qualifications</span>
-          <span class="count">5</span>
-          <span class="detail">Level, title, grade, awarding body, date</span>
         </div>
       </div>
     </div>
@@ -484,15 +474,11 @@
             <tr><td>Title</td><td><code>initial</code></td><td><code>STUD_Title</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
             <tr><td>Date of Birth</td><td><code>birthday</code></td><td><code>STUD_DOB</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
             <tr><td>Gender</td><td><code>gender</code></td><td><code>STUD_Gender</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>Email</td><td><code>email</code></td><td><code>STUD_EMail_Address</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
             <tr><td>Nationality</td><td><code>nationality</code></td><td><code>STUD_Nationality</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
             <tr><td>Country of Birth</td><td><code>country_of_birth</code></td><td><code>STUD_Country_of_Birth</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
             <tr><td>Religion</td><td><code>religion</code></td><td><code>STUD_Religion</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
             <tr><td>Ethnicity</td><td><code>ethnicity</code></td><td><code>STUD_Ethnicity</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
             <tr><td>Language</td><td><code>first_language</code></td><td><code>STUD_Language</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>English as First Language</td><td><code>is_first_language</code></td><td><code>STUD_Eng_1st_Lang</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>GP Name</td><td><code>gp_name</code></td><td><code>STUD_Doctor_Name</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>GP Contact</td><td><code>gp_contact</code></td><td><code>STUD_Doctor_Telephone</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
             <tr><td>Daytime Phone</td><td><code>phone_number</code></td><td><code>STUD_Daytime_Telephone</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
             <tr><td>Mobile Phone</td><td><code>phone_main</code></td><td><code>STUD_Mobile_Telephone</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
           </tbody>
@@ -515,7 +501,7 @@
             <tr><td>Unique Learner Number (ULN)</td><td><code>unique_learner_number</code></td><td><code>UniqueLearnerNumber</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
             <tr><td>Unique Pupil Number (UPN)</td><td><code>unique_pupil_number</code></td><td><code>UniquePupilNumber</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
             <tr><td>National Insurance Number (NIN)</td><td><code>national_insurance_number</code></td><td><code>NationalInsuranceNumber</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>Unique Candidate Identifier (UCI)</td><td><code>unique_candidate_identifier</code></td><td><code>UniqueCandidateNumber</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
+            <tr><td>Unique Candidate Number (UCN)</td><td><code>unique_candidate_number</code></td><td><code>UniqueCandidateNumber</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -575,11 +561,11 @@
       </div>
     </div>
 
-    <!-- Application & SEN -->
+    <!-- Welfare -->
     <div class="card">
       <span class="section-num">SECTION 5</span>
-      <h2>Application and SEN data</h2>
-      <p>Application-level data including SEN status and disability is exported from Admissions+ to Civica CCM.</p>
+      <h2>Welfare</h2>
+      <p>Disability information collected during the application process is exported from Admissions+ to Civica CCM.</p>
 
       <div class="table-wrap">
         <table>
@@ -587,36 +573,7 @@
             <tr><th>Field</th><th>A+ property</th><th>Civica field</th><th>Direction</th></tr>
           </thead>
           <tbody>
-            <tr><td>Application Year</td><td><code>application_year</code></td><td><code>APPL_Year</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>SEN Statement</td><td><code>have_sen</code></td><td><code>APPL_Statement_of_SEN</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>SEN Type</td><td><code>type_of_sen</code></td><td><code>APPL_SEN</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
             <tr><td>Disability</td><td><code>disability</code></td><td><code>APPL_LDDHP</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>Application Notes</td><td><code>application_notes</code></td><td><code>NOTE_Notes</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Course data -->
-    <div class="card">
-      <span class="section-num">SECTION 6</span>
-      <h2>Course data</h2>
-      <p>Admissions+ imports your course catalogue from Civica CCM so that applicants can select courses during the application process. Course selections and statuses are then exported back.</p>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Field</th><th>A+ property</th><th>Civica field</th><th>Direction</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Course Title</td><td><code>provider_course_title</code></td><td><code>PRPI_Title / PRPH_Title</code></td><td><span class="dir-tag dir-import">Civica &#x2192; A+</span></td></tr>
-            <tr><td>Qualification Title</td><td><code>qualification_title</code></td><td><code>LEARNING_AIM_TITLE</code></td><td><span class="dir-tag dir-import">Civica &#x2192; A+</span></td></tr>
-            <tr><td>Awarding Body</td><td><code>awarding_org_name</code></td><td><code>QEAO_Description</code></td><td><span class="dir-tag dir-import">Civica &#x2192; A+</span></td></tr>
-            <tr><td>Qualification Level</td><td><code>qualification_level</code></td><td><code>NOTIONAL_NVQ_LEVEL_CODE</code></td><td><span class="dir-tag dir-import">Civica &#x2192; A+</span></td></tr>
-            <tr><td>Course Code</td><td><code>course_code</code></td><td><code>APPC_Provision_Code</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>Course Year</td><td><code>course_year</code></td><td><code>CourseYear</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>Application Status</td><td><code>status</code></td><td><code>APPC_Status_Code</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>Application Priority</td><td><code>position</code></td><td><code>APPC_Application_Priority</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -624,7 +581,7 @@
 
     <!-- Education history -->
     <div class="card">
-      <span class="section-num">SECTION 7</span>
+      <span class="section-num">SECTION 6</span>
       <h2>Education history (previous schools)</h2>
       <p>When applicants or parents provide previous school details, this information is exported to Civica CCM.</p>
 
@@ -643,31 +600,9 @@
       </div>
     </div>
 
-    <!-- Qualifications -->
-    <div class="card">
-      <span class="section-num">SECTION 8</span>
-      <h2>Qualifications on entry</h2>
-      <p>Prior qualifications collected during the application process are exported to Civica CCM.</p>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Field</th><th>A+ property</th><th>Civica field</th><th>Direction</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Qualification Level</td><td><code>qualification_level</code></td><td><code>Level</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>Qualification Title</td><td><code>qualification_title</code></td><td><code>CourseTitle</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>Grade</td><td><code>grade</code></td><td><code>Grade</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>Awarding Body</td><td><code>awarding_body</code></td><td><code>AwardingBody</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-            <tr><td>Date Received</td><td><code>date_received</code></td><td><code>DateReceived</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
     <!-- Lookup data -->
     <div class="card">
-      <span class="section-num">SECTION 9</span>
+      <span class="section-num">SECTION 7</span>
       <h2>Lookup data (reference lists)</h2>
       <p>Admissions+ imports your Civica CCM reference lists so that dropdowns and selection fields match your MIS exactly. This keeps data consistent and avoids validation errors during transfer.</p>
 
@@ -681,16 +616,7 @@
         <span class="lookup-pill">Languages</span>
         <span class="lookup-pill">Countries</span>
         <span class="lookup-pill">Disabilities</span>
-        <span class="lookup-pill">SEN Needs</span>
         <span class="lookup-pill">Relationships</span>
-        <span class="lookup-pill">Qualifications</span>
-        <span class="lookup-pill">Grades</span>
-        <span class="lookup-pill">Awarding Bodies</span>
-        <span class="lookup-pill">Qualification Levels</span>
-        <span class="lookup-pill">Application Statuses</span>
-        <span class="lookup-pill">Course Status Codes</span>
-        <span class="lookup-pill">Academic Years</span>
-        <span class="lookup-pill">Campuses</span>
       </div>
 
       <p style="margin-top:0.75rem;">Lookups are refreshed each time you launch the Integration App. When changes are detected, you'll be prompted to accept the updated values.</p>
@@ -698,7 +624,7 @@
 
     <!-- Setup requirements -->
     <div class="card">
-      <span class="section-num">SECTION 10</span>
+      <span class="section-num">SECTION 8</span>
       <h2>Setup requirements</h2>
 
       <h3>What you need from Civica CCM</h3>
@@ -732,7 +658,7 @@
 
     <!-- Coming soon -->
     <div class="card">
-      <span class="section-num">SECTION 11</span>
+      <span class="section-num">SECTION 9</span>
       <h2>Coming soon</h2>
       <p>We're actively expanding the Civica CCM integration. The following capabilities are <strong>planned for upcoming releases</strong>:</p>
 
@@ -742,6 +668,10 @@
             <tr><th>Capability</th><th>Status</th><th>What to expect</th></tr>
           </thead>
           <tbody>
+            <tr><td>Email addresses</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Sync student email addresses to Civica CCM</td></tr>
+            <tr><td>Course selections</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Export applicants' course choices and statuses, and import the Civica course catalogue for the application form</td></tr>
+            <tr><td>Qualifications on entry</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Export prior qualifications, grades, and awarding bodies to Civica CCM</td></tr>
+            <tr><td>SEN &amp; application data</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Sync SEN status, application year, and application notes to Civica CCM</td></tr>
             <tr><td>Reverse sync (Civica to A+)</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Import existing student data from Civica CCM into Admissions+ for pre-populated forms</td></tr>
             <tr><td>Custom fields</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Map and export college-defined custom fields to Civica CCM</td></tr>
             <tr><td>Photo upload</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Transfer student photos from Admissions+ to Civica CCM</td></tr>
