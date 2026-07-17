@@ -759,8 +759,16 @@
         </table>
       </div>
 
+      <h3>Increase the API data limit (critical)</h3>
+      <p>The UNIT-e web API configuration file has a <code>DataLimit</code> setting — <strong>default 100 records</strong> — that caps <em>every</em> <code>report/export</code> response. At the default, any report returning more than 100 rows is <strong>silently truncated</strong>: the API returns exactly 100 rows with no error and no "more available" flag, so neither UNIT-e nor Admissions+ can tell the list is incomplete.</p>
+      <p>Before going live, your UNIT-e administrator or hosting team should:</p>
+      <ul>
+        <li><strong>Raise <code>DataLimit</code></strong> comfortably above the largest list the integration will ever pull — all applicants and students (the matching feed) and all classes and courses, sized for peak-season volumes rather than today's counts. A high value has no downside; the cap protects nothing, it only truncates. <em>The exact config file location is given in your UNIT-e API documentation.</em></li>
+        <li><strong>Trim the report queries</strong> to return only the rows the integration needs — filtering out unused codes and years keeps large reports fast, which is the right performance lever rather than a low cap.</li>
+        <li><strong>Republish each report and re-test</strong>, confirming the returned row count matches the totals in UNIT-e.</li>
+      </ul>
       <div class="note warn">
-        <p><strong>Increase the report row limit.</strong> UNIT-e caps how many rows a report returns by default. The maximum row limit on each of these reports must be raised high enough to return every record — otherwise large result sets (for example the full student list behind <code>API.AppOrStudent</code>) are truncated and records are missed during import.</p>
+        <p><strong>Why it matters:</strong> truncation is invisible. A capped <code>API.AppOrStudent</code> feed means applicants are matched against only a fragment of your student roll, so existing students go unmatched and duplicate records are created in UNIT-e. Because the sync also reconciles against what the API returns, reference numbers missing from a truncated response can be misread as removals — so an under-set limit risks both duplicate records and incorrect data changes.</p>
       </div>
 
       <h3>What you need from Admissions+</h3>
