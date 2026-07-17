@@ -741,6 +741,24 @@
         <li><strong>API credentials</strong> — a WebAPI login that returns a session key for the integration</li>
       </ul>
 
+      <h3>Required UNIT-e reports</h3>
+      <p>The Integration App reads data from UNIT-e through its report export API (<code>report/export/json/&hellip;</code>). Before the integration can run, your UNIT-e team must create the following custom reports, named <strong>exactly</strong> as shown (names are case-sensitive):</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Report name</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>API.AppOrStudent</code></td><td>Checks whether an applicant already exists in UNIT-e, so the app knows whether to create a new record or update an existing one</td></tr>
+            <tr><td><code>API.NextStuRef</code></td><td>Supplies the next student reference number, used to generate each new student's reference on import</td></tr>
+            <tr><td><code>API.LookupCourses</code></td><td>Returns your course / module list so Admissions+ courses can be mapped to the right UNIT-e modules</td></tr>
+            <tr><td><code>API.LookupClasses</code></td><td>Returns your class / group list for mapping class registrations (used by the upcoming Classes import)</td></tr>
+            <tr><td><code>API.Schools</code></td><td>Returns your schools list so previous-school details can be matched to the correct establishment</td></tr>
+            <tr><td><code>API.StuAppCourses</code></td><td>Returns the courses already on a student's application, so re-imports don't create duplicates</td></tr>
+          </tbody>
+        </table>
+      </div>
+
       <h3>What you need from Admissions+</h3>
       <ul>
         <li><strong>Admissions+ login</strong> — email, password, and your college subdomain</li>
