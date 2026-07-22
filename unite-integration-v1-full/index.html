@@ -549,6 +549,7 @@
       <h2>Student personal details</h2>
       <p>These fields are transferred from a student's record in Admissions+ to their corresponding record in UNIT-e. Lookup-type fields are validated against your live UNIT-e lookup tables before import.</p>
 
+      <div class="report-acc-list">
       <details class="report-acc">
         <summary><span class="report-head"><span class="rname">View the 16 student fields</span><span class="rhint">field-by-field mapping</span></span></summary>
         <div class="report-sample">
@@ -579,6 +580,7 @@
       </div>
         </div>
       </details>
+      </div>
     </div>
 
     <!-- Identifiers -->
@@ -802,6 +804,7 @@
         <li><strong>API credentials</strong> — a <strong>dedicated UNIT-e API user account</strong> (not an individual member of staff's login) set up with the permissions listed below and shared by everyone who uses the Integration App. Its WebAPI login returns the session key the app uses for all calls.</li>
       </ul>
 
+      <div class="report-acc-list">
       <details class="report-acc">
         <summary>
           <span class="report-head"><span class="rname">API user permissions</span><span class="rhint">Show endpoints</span></span>
@@ -827,6 +830,7 @@
       </div>
         </div>
       </details>
+      </div>
 
       <h3>Required UNIT-e reports</h3>
       <p>The Integration App reads data from UNIT-e through its report export API (<code>report/export/json/&hellip;</code>). Before the integration can run, your UNIT-e team must create the following custom reports, named <strong>exactly</strong> as shown (names are case-sensitive). As these are custom reports, <strong>expand each one to see a sample of the JSON it should return</strong> so yours follows the same shape:</p>
@@ -991,6 +995,7 @@
 
       <h3>Increase the API data limit</h3>
       <p>UNIT-e's web API config caps <em>every</em> <code>report/export</code> response at a <code>DataLimit</code> — <strong>default 100 records</strong> — and truncates silently, with no error. <strong>Before go-live, raise it well above your peak applicant, student, class and course counts.</strong></p>
+      <div class="report-acc-list">
       <details class="report-acc">
         <summary><span class="report-head"><span class="rname">Why it matters &amp; how to set it</span><span class="rhint">Details</span></span></summary>
         <div class="report-sample">
@@ -1005,6 +1010,7 @@
       </div>
         </div>
       </details>
+      </div>
 
       <h3>What you need from Admissions+</h3>
       <ul>
