@@ -574,7 +574,7 @@
             <tr><td>Disability</td><td><code>disability</code></td><td><code>Disability</code> (lookup, first value)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
             <tr><td>Mode of Travel</td><td><code>mode_of_travel</code></td><td><code>TravelMethod</code> (lookup, first value)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
             <tr><td>Service Children Education</td><td><code>service_child</code></td><td><code>ServiceStudent</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
-            <tr><td>Address Area</td><td><code>county</code></td><td><code>AddressArea</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Address Area</td><td><code>application_choice_order</code></td><td><code>AddressArea</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -596,7 +596,7 @@
           </thead>
           <tbody>
             <tr><td>Unique Learner Number (ULN)</td><td><code>unique_learner_number</code></td><td><code>UniqueLearnerNumber</code></td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
-            <tr><td>Student Code</td><td><code>user_code</code></td><td>Student code field</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Student Code</td><td><code>user_code</code></td><td><code>ConnexionsId</code></td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -635,7 +635,7 @@
             <tr><th>Field</th><th>A+ property</th><th>UNIT-e field</th><th>Direction</th></tr>
           </thead>
           <tbody>
-            <tr><td>Contact Name</td><td><code>contacts[]</code>: <code>first_name</code>, <code>middle_name</code>, <code>last_name</code></td><td><code>nok</code> — Person (Forenames, Surname), Priority 1 &amp; 2</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Contact Name</td><td><code>contacts[]</code>: <code>first_name</code>, <code>last_name</code></td><td><code>nok</code> — Person (Forenames, Surname), Priority 1 &amp; 2</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
             <tr><td>Relationship</td><td><code>contacts[].relationship</code></td><td><code>personnokrelatinshp</code> / <code>RelationshipType</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
             <tr><td>Contact Phones (Day / Evening / Mobile)</td><td><code>contacts[].telephones[]</code></td><td><code>personnoktelephone</code> (PersonTelephone record)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
             <tr><td>Contact Home Address</td><td><code>contacts[]</code>: <code>address1&#x2013;3</code>, <code>post_town</code>, <code>postcode</code>, <code>country</code></td><td><code>personnokaddress</code> (PersonAddress record)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
@@ -785,6 +785,9 @@
             <tr><td>UNIT-e Address ID</td><td><code>mis_address_id</code> — identifies the linked address record</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
             <tr><td>Student Reference</td><td><code>external_mis_reference_number</code> — the UNIT-e-generated student reference (surname prefix + application year + next number, e.g. TES202600520)</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
             <tr><td>UNIT-e Course ID (per course)</td><td><code>external_mis_id</code> on each course — restores mapping next time</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>UNIT-e Class ID (per class)</td><td><code>external_mis_id</code> on each class — restores mapping next time</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>Course last synced</td><td><code>last_external_course_synced_at</code> — when the course was last successfully imported for the selected student</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>Class last synced</td><td><code>last_external_class_synced_at</code> — when the class was last successfully imported for the selected student</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
             <tr><td>Import reports &amp; logs</td><td>HTML report and log files uploaded to Admissions+ after each run</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
           </tbody>
         </table>
