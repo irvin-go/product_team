@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UNIT-e Integration — Scope &amp; Coverage</title>
+<style>
+  @font-face {
+    font-family: 'Charter';
+    src: local('Charter'), local('Georgia');
+    font-display: swap;
+  }
+
+  :root {
+    --ink: #1b2d3e;
+    --ink-secondary: #4a6274;
+    --ink-muted: #7b909f;
+    --accent: #1a6b7a;
+    --accent-light: #e6f2f4;
+    --surface: #f5f4f1;
+    --card: #ffffff;
+    --border: #d8d4ce;
+    --border-light: #eae7e2;
+    --export-color: #1a6b7a;
+    --import-color: #6b4c1a;
+    --both-color: #2d5a27;
+    --unavail-color: #8c6e6e;
+    --tag-export-bg: #e6f2f4;
+    --tag-import-bg: #f4ede2;
+    --tag-both-bg: #e6f0e4;
+    --tag-unavail-bg: #f0eaea;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--surface);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page-header {
+    background: var(--ink);
+    color: #fff;
+    padding: 3rem 2rem 2.5rem;
+  }
+
+  .page-header .container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .page-header .eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .page-header h1 {
+    font-family: Charter, Georgia, 'Times New Roman', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-header .subtitle {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.65);
+    max-width: 540px;
+    line-height: 1.5;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .content {
+    padding: 2rem 0 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    padding: 1.75rem 2rem;
+  }
+
+  .card h2 {
+    font-family: Charter, Georgia, 'Times New Roman', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .card h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-secondary);
+    margin: 1.25rem 0 0.6rem;
+    letter-spacing: 0.02em;
+  }
+
+  .card h3:first-of-type { margin-top: 0.25rem; }
+
+  .card p, .card li {
+    font-size: 0.88rem;
+    color: var(--ink-secondary);
+    line-height: 1.65;
+  }
+
+  .card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .card ul li {
+    padding: 0.25rem 0 0.25rem 1.1rem;
+    position: relative;
+  }
+
+  .card ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7rem;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 1.25rem 0;
+    overflow-x: auto;
+  }
+
+  .flow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+    min-width: 100px;
+  }
+
+  .flow-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1.5px solid rgba(26,107,122,0.2);
+  }
+
+  .flow-icon.unite { background: #e8edf3; color: #3b5998; border-color: rgba(59,89,152,0.2); }
+  .flow-icon.parent { background: #f4ede2; color: #6b4c1a; border-color: rgba(107,76,26,0.2); }
+  .flow-icon.app { background: #eee8f4; color: #6b4c8a; border-color: rgba(107,76,138,0.2); }
+
+  .flow-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--ink-secondary);
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+
+  .flow-sublabel {
+    font-size: 0.65rem;
+    color: var(--ink-muted);
+    text-align: center;
+    max-width: 90px;
+  }
+
+  .flow-arrow {
+    color: var(--ink-muted);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    padding: 0 0.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  /* Direction tags */
+  .dir-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .dir-export { background: var(--tag-export-bg); color: var(--export-color); }
+  .dir-import { background: var(--tag-import-bg); color: var(--import-color); }
+  .dir-both   { background: var(--tag-both-bg);   color: var(--both-color); }
+  .dir-unavail { background: var(--tag-unavail-bg); color: var(--unavail-color); }
+  .dir-soon    { background: #e8ecf4; color: #4a5a8a; }
+
+  /* Tables */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 0.75rem 0;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  thead th {
+    background: var(--surface);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-muted);
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+  }
+
+  tbody td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--ink-secondary);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  tbody tr:hover { background: rgba(245,244,241,0.5); }
+
+  td:first-child { color: var(--ink); font-weight: 500; }
+
+  td code {
+    font-size: 0.75rem;
+    background: var(--surface);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    color: var(--ink-secondary);
+    font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  }
+
+  /* Coverage summary */
+  .coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+  }
+
+  .coverage-item {
+    border: 1px solid var(--border-light);
+    border-radius: 5px;
+    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .coverage-item .label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ink-secondary);
+  }
+
+  .coverage-item .count {
+    font-family: Charter, Georgia, serif;
+    font-size: 1.6rem;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .coverage-item .detail {
+    font-size: 0.7rem;
+    color: var(--ink-muted);
+  }
+
+  /* Note callout */
+  .note {
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    padding: 0.85rem 1rem;
+    border-radius: 0 4px 4px 0;
+    margin: 0.75rem 0;
+  }
+
+  .note p {
+    font-size: 0.82rem;
+    color: var(--accent);
+    line-height: 1.55;
+  }
+
+  .note strong { font-weight: 600; }
+
+  .warn {
+    background: #fdf6ec;
+    border-left-color: #b8860b;
+  }
+  .warn p { color: #7a5a0a; }
+
+  /* Lookup pills */
+  .lookup-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0.5rem 0;
+  }
+
+  .lookup-pill {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.55rem;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 3px;
+    color: var(--ink-secondary);
+    font-weight: 500;
+  }
+
+  /* Section anchor */
+  .section-num {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.15rem;
+    display: block;
+  }
+
+  @media (max-width: 600px) {
+    .page-header { padding: 2rem 1.25rem 1.75rem; }
+    .container { padding: 0 1.25rem; }
+    .card { padding: 1.25rem; }
+    .page-header h1 { font-size: 1.5rem; }
+    .flow { flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+    .flow-arrow { display: none; }
+    .coverage-grid { grid-template-columns: 1fr; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+  /* Applicaa brand overlay */
+  :root {
+    --ink: #263C91;
+    --ink-secondary: #505B72;
+    --ink-muted: #818FA7;
+    --navy: #263C91;
+    --coral: #EC634B;
+    --accent: #263C91;
+    --accent-light: #EEF2FB;
+    --surface: #EEF2F8;
+    --card: #ffffff;
+    --border: #D8E2E7;
+    --border-light: #E4E7EC;
+    --export-color: #263C91;
+    --import-color: #1D4ED8;
+    --both-color: #15803D;
+    --unavail-color: #B91C1C;
+    --tag-export-bg: #EEF2FB;
+    --tag-import-bg: #EAF1FE;
+    --tag-both-bg: #F6FFED;
+    --tag-unavail-bg: #FFF1F0;
+  }
+  body { font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  .page-header h1, .card h2, .coverage-item .count { font-family: 'Mulish', system-ui, -apple-system, sans-serif; }
+  .page-header h1 { font-weight: 800; letter-spacing: -0.02em; }
+  .card h2 { font-weight: 700; }
+  .coverage-item .count { font-weight: 800; }
+  .page-header .eyebrow { color: var(--coral); font-weight: 700; }
+  .section-num { color: var(--coral); font-weight: 700; letter-spacing: 0.08em; }
+  .dir-soon { background: #FFF7E6; color: #C2410C; }
+  .flow-icon.isams, .flow-icon.civica, .flow-icon.unite { background: #EEF2FB; color: #263C91; border-color: rgba(38,60,145,0.2); }
+  .flow-icon.parent { background: #FEEBDB; color: #CA4136; border-color: rgba(236,99,75,0.25); }
+  .flow-icon.app { background: #F3F4F7; color: #505B72; border-color: rgba(80,91,114,0.2); }
+  .warn { background: #FFF7E6; border-left-color: #F97316; }
+  .warn p { color: #C2410C; }
+  tbody tr:hover { background: rgba(38,60,145,0.04); }
+  .cp { color: var(--coral); font-weight: 800; font-style: normal; }
+  .brand-logo { margin-bottom: 1.1rem; }
+  .brand-logo svg { height: 24px; width: auto; display: block; }
+  /* Report sample accordion */
+  .report-acc-list { border: 1px solid var(--border-light); border-radius: 5px; overflow: hidden; margin: 0.75rem 0; }
+  .report-acc, .report-row { border-bottom: 1px solid var(--border-light); }
+  .report-acc:last-child, .report-row:last-child { border-bottom: none; }
+  .report-acc > summary { list-style: none; cursor: pointer; padding: 0.7rem 0.9rem; }
+  .report-acc > summary::-webkit-details-marker { display: none; }
+  .report-acc > summary:hover { background: rgba(38,60,145,0.04); }
+  .report-row { padding: 0.7rem 0.9rem; }
+  .report-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; }
+  .rname { font-family: 'SF Mono','Cascadia Code','Consolas',monospace; font-size: 0.8rem; font-weight: 700; color: var(--navy); }
+  .rpurpose { display: block; font-size: 0.82rem; color: var(--ink-secondary); margin-top: 0.2rem; line-height: 1.5; }
+  .rhint { font-size: 0.68rem; font-weight: 700; color: var(--coral); letter-spacing: 0.03em; white-space: nowrap; text-transform: uppercase; }
+  .rhint::before { content: '\25B8  '; }
+  .report-acc[open] > summary .rhint::before { content: '\25BE  '; }
+  .rhint-muted { font-size: 0.68rem; color: var(--ink-muted); white-space: nowrap; font-style: italic; }
+  .report-sample { padding: 0 0.9rem 0.85rem; }
+  .report-sample .sample-note { font-size: 0.8rem; color: var(--ink-secondary); margin: 0.3rem 0 0.35rem; line-height: 1.5; }
+  pre.json { background: var(--surface); border: 1px solid var(--border-light); border-radius: 4px; padding: 0.7rem 0.85rem; overflow: auto; max-height: 320px; font-family: 'SF Mono','Cascadia Code','Consolas',monospace; font-size: 0.72rem; line-height: 1.5; color: var(--ink); margin: 0.25rem 0 0.5rem; }
+  .part-band { margin: 1.75rem 0 0.5rem; padding-top: 0.6rem; border-top: 2px solid var(--navy); font-family: 'Mulish', system-ui, sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--navy); letter-spacing: -0.01em; }
+  .part-band span { display: block; font-family: 'Inter', system-ui, sans-serif; font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--coral); margin-top: 0.15rem; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="container">
+    <div class="brand-logo"><svg width="153" height="48" viewBox="0 0 153 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="applicaa"><path fill-rule="evenodd" clip-rule="evenodd" d="M142.027 1.9726H10.0822C5.69861 1.9726 1.97259 5.47945 1.97259 10.0822V37.9178C1.97259 42.3014 5.47943 46.0274 10.0822 46.0274H142.027C146.411 46.0274 150.137 42.5205 150.137 37.9178V10.0822C150.137 5.47945 146.411 1.9726 142.027 1.9726ZM10.0822 0C4.60272 0 0 4.60274 0 10.0822V37.9178C0 43.3973 4.60272 48 10.0822 48H142.027C147.507 48 152.11 43.3973 152.11 37.9178V10.0822C152.11 4.60274 147.507 0 142.027 0H10.0822Z" fill="#5079FA"></path><path d="M130.411 32.4388C128.877 32.4388 127.562 32.0004 126.247 31.3429C124.932 30.6854 124.055 29.5895 123.397 28.4936C122.74 27.1785 122.301 25.8634 122.301 24.11C122.301 22.5758 122.74 21.0415 123.397 19.7265C124.055 18.4114 125.151 17.5347 126.247 16.8771C127.562 16.2196 128.877 15.7812 130.411 15.7812C131.945 15.7812 133.041 16.0004 134.137 16.658C135.233 17.3155 136.11 18.1922 136.767 19.5073C137.425 20.8223 137.863 22.1374 137.863 24.11C137.863 25.8634 137.425 27.3977 136.767 28.7128C136.11 30.0278 135.233 30.9045 134.137 31.5621C133.041 32.0004 131.726 32.4388 130.411 32.4388ZM130.411 30.4662C131.507 30.4662 132.603 30.247 133.479 29.5895C134.356 29.1511 135.233 28.4936 135.89 27.6169C136.329 26.7402 136.767 25.4251 136.767 23.8908C136.767 22.3566 136.329 21.0415 135.89 20.384C135.452 19.7265 134.575 18.8497 133.479 18.4114C132.603 17.973 131.507 17.5347 130.411 17.5347C129.315 17.5347 128.219 17.7539 127.342 18.4114C126.466 18.8497 125.808 19.7265 125.151 20.6032C124.712 21.4799 124.274 22.5758 124.274 23.8908C124.274 25.2059 124.493 26.3018 125.151 27.1785C125.589 28.0552 126.466 28.9319 127.342 29.3703C128.438 30.247 129.315 30.4662 130.411 30.4662ZM136.767 32.2196V27.3977V16.0004H138.959V32.4388H136.767V32.2196Z" fill="white"></path><path d="M110.466 32.4388C108.932 32.4388 107.397 32.0004 106.301 31.3429C104.986 30.6854 104.11 29.5895 103.452 28.4936C102.795 27.1785 102.356 25.8634 102.356 24.11C102.356 22.5758 102.795 21.0415 103.452 19.7265C104.11 18.4114 105.206 17.5347 106.301 16.8771C107.616 16.2196 108.932 15.7812 110.466 15.7812C112 15.7812 113.096 16.0004 114.192 16.658C115.288 17.3155 116.164 18.1922 116.822 19.5073C117.48 20.8223 117.918 22.1374 117.918 24.11C117.918 25.8634 117.48 27.3977 116.822 28.7128C116.164 30.0278 115.288 30.9045 114.192 31.5621C113.315 32.0004 112 32.4388 110.466 32.4388ZM110.685 30.4662C111.781 30.4662 112.877 30.247 113.753 29.5895C114.63 29.1511 115.507 28.4936 116.164 27.6169C116.603 26.7402 117.041 25.4251 117.041 23.8908C117.041 22.3566 116.603 21.0415 116.164 20.384C115.726 19.7265 114.849 18.8497 113.753 18.4114C112.877 17.973 111.781 17.5347 110.685 17.5347C109.589 17.5347 108.493 17.7539 107.616 18.4114C106.74 18.8497 106.082 19.7265 105.425 20.6032C104.767 21.4799 104.548 22.5758 104.548 23.8908C104.548 25.2059 104.767 26.3018 105.425 27.1785C105.863 28.0552 106.74 28.9319 107.616 29.3703C108.493 30.247 109.589 30.4662 110.685 30.4662ZM116.822 32.2196V27.3977V16.0004H119.014V32.4388H116.822V32.2196Z" fill="white"></path><path d="M94.6849 32.4388C93.1506 32.4388 91.6164 32.0004 90.3013 31.3429C88.9863 30.6854 88.1096 29.5895 87.2329 28.4936C86.5753 27.1785 86.137 25.8634 86.137 24.11C86.137 22.5758 86.5753 21.0415 87.2329 19.7265C87.8904 18.4114 88.9863 17.5347 90.3013 16.8771C91.6164 16.2196 93.1506 15.7812 94.6849 15.7812C96 15.7812 97.315 16.0004 98.4109 16.658C99.5068 17.0963 100.384 17.973 101.041 19.0689L99.2876 20.1648C98.6301 19.2881 97.9726 18.6306 97.0959 18.4114C96.2192 17.973 95.3424 17.7539 94.4657 17.7539C93.3698 17.7539 92.2739 17.973 91.3972 18.6306C90.5205 19.0689 89.6438 19.9456 89.2054 20.8224C88.7671 21.6991 88.3287 22.795 88.3287 24.11C88.3287 25.4251 88.5479 26.521 89.2054 27.3977C89.863 28.2744 90.5205 29.1511 91.3972 29.5895C92.2739 30.0278 93.3698 30.4662 94.4657 30.4662C95.3424 30.4662 96.4383 30.247 97.0959 29.8086C97.9726 29.3703 98.6301 28.7128 99.2876 28.0552L101.041 29.1511C100.384 30.247 99.5068 31.1237 98.4109 31.5621C97.315 32.2196 96.2191 32.4388 94.6849 32.4388Z" fill="white"></path><path d="M80.8767 32.2196V15.7813H83.0685V32.2196H80.8767ZM81.9726 12.2744C81.5342 12.2744 81.0959 12.0552 80.8767 11.8361C80.6575 11.6169 80.4384 11.1785 80.4384 10.7402C80.4384 10.3018 80.6575 9.86347 80.8767 9.64429C81.0959 9.42511 81.5342 9.20593 81.9726 9.20593C82.411 9.20593 82.8493 9.42511 83.0685 9.64429C83.2877 9.86347 83.5068 10.3018 83.5068 10.7402C83.5068 11.1785 83.2877 11.6169 83.0685 11.8361C82.8493 12.0552 82.411 12.2744 81.9726 12.2744Z" fill="white"></path><path d="M73.6439 32.2198V7.23352H75.8357V32.439H73.6439V32.2198Z" fill="white"></path><path d="M62.2466 32.4388C60.9316 32.4388 59.6165 32.2196 58.5206 31.5621C57.4247 30.9045 56.548 30.0278 55.8905 28.7128C55.2329 27.3977 54.7946 25.8634 54.7946 24.11C54.7946 22.3566 55.2329 20.8223 55.8905 19.5073C56.548 18.1922 57.4247 17.3155 58.5206 16.658C59.6165 16.0004 60.9316 15.7812 62.4658 15.7812C64.0001 15.7812 65.3151 16.2196 66.6302 16.8771C67.9453 17.5347 68.822 18.6306 69.4795 19.7265C70.137 21.0415 70.5754 22.3566 70.5754 24.11C70.5754 25.8634 70.137 27.1785 69.4795 28.4936C68.822 29.8087 67.7261 30.6854 66.6302 31.3429C65.3151 32.0004 63.7809 32.4388 62.2466 32.4388ZM53.9178 40.7676V16.0004H56.1096V20.8224L55.8905 24.11L56.1096 27.3977V40.7676H53.9178ZM62.0275 30.4662C63.1234 30.4662 64.2192 30.247 65.0959 29.5895C65.9727 29.1511 66.6302 28.2744 67.2877 27.3977C67.7261 26.521 68.1644 25.2059 68.1644 24.11C68.1644 22.795 67.9453 21.6991 67.2877 20.8224C66.8494 19.9456 65.9727 19.0689 65.0959 18.6306C64.2192 18.1922 63.1234 17.7539 62.0275 17.7539C60.9316 17.7539 59.8357 17.973 58.9589 18.6306C58.0822 19.0689 57.4247 19.9456 56.7672 20.8224C56.3288 21.6991 55.8905 22.795 55.8905 24.11C55.8905 25.4251 56.1096 26.521 56.7672 27.3977C57.2055 28.2744 58.0822 29.1511 58.9589 29.5895C59.8357 30.247 60.9316 30.4662 62.0275 30.4662Z" fill="white"></path><path d="M42.5206 32.4388C41.2055 32.4388 39.8905 32.2196 38.7946 31.5621C37.6987 30.9045 36.822 30.0278 36.1644 28.7128C35.5069 27.3977 35.0685 25.8634 35.0685 24.11C35.0685 22.3566 35.5069 20.8223 36.1644 19.5073C36.822 18.1922 37.6987 17.3155 38.7946 16.658C39.8905 16.0004 41.2055 15.7812 42.7398 15.7812C44.274 15.7812 45.5891 16.2196 46.9041 16.8771C48.2192 17.5347 49.0959 18.6306 49.7535 19.7265C50.411 21.0415 50.8494 22.3566 50.8494 24.11C50.8494 25.6443 50.411 27.1785 49.7535 28.4936C49.0959 29.8087 48 30.6854 46.9041 31.3429C45.3699 32.0004 44.0548 32.4388 42.5206 32.4388ZM33.9727 40.7676V16.0004H36.1644V20.8224L35.9452 24.11L36.1644 27.3977V40.7676H33.9727ZM42.3014 30.4662C43.3973 30.4662 44.4932 30.247 45.3699 29.5895C46.2466 29.1511 46.9042 28.2744 47.5617 27.3977C48 26.521 48.4384 25.2059 48.4384 24.11C48.4384 22.795 48.2192 21.6991 47.5617 20.8224C47.1233 19.9456 46.2466 19.0689 45.3699 18.6306C44.4932 18.1922 43.3973 17.7539 42.3014 17.7539C41.2055 17.7539 40.1096 17.973 39.2329 18.6306C38.3562 19.0689 37.6987 19.9456 37.0411 20.8224C36.6028 21.6991 36.1644 22.795 36.1644 24.11C36.1644 25.4251 36.3836 26.521 37.0411 27.3977C37.4795 28.2744 38.3562 29.1511 39.2329 29.5895C40.1096 30.247 41.2055 30.4662 42.3014 30.4662Z" fill="white"></path><path d="M20.8219 32.4388C19.2876 32.4388 17.7533 32.0004 16.6575 31.3429C15.3424 30.6854 14.4657 29.5895 13.8082 28.4936C13.1506 27.1785 12.7123 25.8634 12.7123 24.11C12.7123 22.5758 13.1506 21.0415 13.8082 19.7265C14.4657 18.4114 15.5616 17.5347 16.6575 16.8771C17.9725 16.2196 19.2876 15.7812 20.8219 15.7812C22.3561 15.7812 23.452 16.0004 24.5479 16.658C25.6438 17.3155 26.5205 18.1922 27.178 19.5073C27.8355 20.8223 28.2739 22.1374 28.2739 24.11C28.2739 25.8634 27.8355 27.3977 27.178 28.7128C26.5205 30.0278 25.6438 30.9045 24.5479 31.5621C23.6712 32.0004 22.3561 32.4388 20.8219 32.4388ZM21.041 30.4662C22.1369 30.4662 23.2328 30.247 24.1095 29.5895C24.9862 29.1511 25.8629 28.4936 26.5205 27.6169C26.9588 26.7402 27.3972 25.4251 27.3972 23.8908C27.3972 22.3566 26.9588 21.0415 26.5205 20.384C26.0821 19.7265 25.2054 18.8497 24.1095 18.4114C23.2328 17.973 22.1369 17.5347 21.041 17.5347C19.9451 17.5347 18.8493 17.7539 17.9725 18.4114C17.0958 18.8497 16.4383 19.7265 15.7808 20.6032C15.3424 21.4799 14.9041 22.5758 14.9041 23.8908C14.9041 25.2059 15.1232 26.3018 15.7808 27.1785C16.2191 28.0552 17.0958 28.9319 17.9725 29.3703C18.8493 30.247 19.9451 30.4662 21.041 30.4662ZM27.178 32.2196V27.3977V16.0004H29.3698V32.4388H27.178V32.2196Z" fill="white"></path></svg></div>
+    <div class="eyebrow">Integration Guide</div>
+    <h1>UNIT-e Integration — Scope &amp; Coverage</h1>
+    <p class="subtitle">Everything your college needs to know about how Admissions<span class="cp">+</span> connects with UNIT-e, what data is supported, and how it flows.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content">
+
+    <div class="note">
+      <p><strong>Who reads what &mdash;</strong> if you work in <strong>admissions</strong>, you only need <em>How the integration works</em> and <em>Coverage at a glance</em>. The rest (<em>Setup requirements</em> and the field tables) is for whoever connects the systems &mdash; your IT or UNIT-e team.</p>
+      <p style="margin-top:0.5rem;"><strong>Before you import &mdash;</strong> UNIT-e's API can't undo an enrolment, so finalise a student's subjects and classes before importing them; later changes are made directly in UNIT-e.</p>
+    </div>
+
+    <!-- How it works -->
+    <div class="card">
+      <h2>How the integration works</h2>
+      <p>Admissions+ connects to your UNIT-e system through the <strong>Applicaa UNIT-e Integration App</strong>, a lightweight Windows application installed on your college network. The app securely bridges Admissions+ and your UNIT-e system, transferring applicant, contact, and course data using the UNIT-e WebAPI.</p>
+
+      <h3>Data flow</h3>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-icon parent">&#x1f468;&#x200d;&#x1f469;&#x200d;&#x1f467;</div>
+          <span class="flow-label">Applicants</span>
+          <span class="flow-sublabel">Submit applications &amp; forms</span>
+        </div>
+        <div class="flow-arrow">&#x2192;</div>
+        <div class="flow-step">
+          <div class="flow-icon">A<span class="cp">+</span></div>
+          <span class="flow-label">Admissions+</span>
+          <span class="flow-sublabel">Application forms &amp; management</span>
+        </div>
+        <div class="flow-arrow">&#x2192;</div>
+        <div class="flow-step">
+          <div class="flow-icon app">&#x1f4bb;</div>
+          <span class="flow-label">Integration App</span>
+          <span class="flow-sublabel">Desktop bridge on your network</span>
+        </div>
+        <div class="flow-arrow">&#x2192;</div>
+        <div class="flow-step">
+          <div class="flow-icon unite">&#x1f3eb;</div>
+          <span class="flow-label">UNIT-e</span>
+          <span class="flow-sublabel">Students, applications &amp; courses</span>
+        </div>
+      </div>
+
+      <h3>Applicant matching</h3>
+      <p>Before importing, each applicant is automatically matched against your UNIT-e records — on Application ID, name, date of birth, gender, and postcode — and sorted into one of two groups so that no duplicate records are created:</p>
+      <ul>
+        <li><strong>New applicants</strong> — no existing UNIT-e record; a brand-new student and application is created in UNIT-e</li>
+        <li><strong>Existing applicants</strong> — matched to a UNIT-e record; the existing student is updated and a new application is linked</li>
+      </ul>
+      <p>You can review and confirm the matches manually: matched fields are highlighted, and student-type badges show at a glance whether a person is already a UNIT-e student and whether they already have an application.</p>
+
+      <div class="note">
+        <p><strong>Safe by design:</strong> For student and contact data, Admissions+ only ever creates new records or updates existing values in UNIT-e — it does not delete a student's personal or contact records. Lookup values that UNIT-e doesn't recognise are skipped with a warning rather than causing the import to fail.</p>
+      </div>
+    </div>
+
+    <!-- Coverage at a glance -->
+    <div class="card">
+      <h2>Coverage at a glance</h2>
+      <div class="coverage-grid">
+        <div class="coverage-item">
+          <span class="label">Personal details</span>
+          <span class="count">16</span>
+          <span class="detail">Names, DOB, gender, title, contact, ethnicity, religion, nationality, languages &amp; more</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Identifiers</span>
+          <span class="count">3</span>
+          <span class="detail">Student reference, ULN, student code</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Contact details</span>
+          <span class="count">4</span>
+          <span class="detail">Email, home phone, mobile, home address</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Emergency contacts</span>
+          <span class="count">Up to 2</span>
+          <span class="detail">Name, relationship, phones, address, email</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Application data</span>
+          <span class="count">3</span>
+          <span class="detail">Date submitted, enrolment date, application status</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">School history</span>
+          <span class="count">1</span>
+          <span class="detail">Previous school matched to UNIT-e</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Courses</span>
+          <span class="count">3</span>
+          <span class="detail">Course mapping with status codes — interest, offer, enrolled</span>
+        </div>
+        <div class="coverage-item">
+          <span class="label">Lookup lists</span>
+          <span class="count">13</span>
+          <span class="detail">Reference lists synced from UNIT-e into Admissions+</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Personal details -->
+    <div class="part-band">Part A &mdash; What data flows<span>For admissions staff</span></div>
+
+    <div class="card">
+      <span class="section-num">SECTION 1</span>
+      <h2>Student personal details</h2>
+      <p>These fields are transferred from a student's record in Admissions+ to their corresponding record in UNIT-e. Lookup-type fields are validated against your live UNIT-e lookup tables before import.</p>
+
+      <details class="report-acc">
+        <summary><span class="report-head"><span class="rname">View the 16 student fields</span><span class="rhint">field-by-field mapping</span></span></summary>
+        <div class="report-sample">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>A+ property</th><th>UNIT-e field</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Legal Forename</td><td><code>first_name</code> + <code>middle_name</code></td><td><code>Forenames</code> (max 255)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Legal Surname</td><td><code>last_name</code></td><td><code>Surname</code> (max 255)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Preferred Forename</td><td><code>preferred_forename</code></td><td><code>PreferredName</code> (max 255)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Date of Birth</td><td><code>birthday</code></td><td><code>DateOfBirth</code> (dd-MMM-yyyy)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Gender</td><td><code>gender</code></td><td><code>Gender</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Title</td><td><code>initial</code></td><td><code>Title</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Religion</td><td><code>religion</code></td><td><code>Religion</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Nationality</td><td><code>nationality</code></td><td><code>Nationality</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Country of Birth</td><td><code>country_of_birth</code></td><td><code>CountryOfBirth</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Ethnicity</td><td><code>ethnicity</code></td><td><code>Ethnicity</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>First Language</td><td><code>first_language</code></td><td><code>Language</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Home Language</td><td><code>home_language</code></td><td><code>HomeLanguage</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Disability</td><td><code>disability</code></td><td><code>Disability</code> (lookup, first value)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Mode of Travel</td><td><code>mode_of_travel</code></td><td><code>TravelMethod</code> (lookup, first value)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Service Children Education</td><td><code>service_child</code></td><td><code>ServiceStudent</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Address Area</td><td><code>county</code></td><td><code>AddressArea</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Identifiers -->
+    <div class="card">
+      <span class="section-num">SECTION 2</span>
+      <h2>Student identifiers</h2>
+      <p>Student identifiers are exported from Admissions+ to UNIT-e. The student reference is generated automatically using your UNIT-e numbering rules.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>A+ property</th><th>UNIT-e field</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Unique Learner Number (ULN)</td><td><code>unique_learner_number</code></td><td><code>UniqueLearnerNumber</code></td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Student Code</td><td><code>user_code</code></td><td>Student code field</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Contact details -->
+    <div class="card">
+      <span class="section-num">SECTION 3</span>
+      <h2>Contact details</h2>
+      <p>Student contact details are exported to UNIT-e. Existing address and telephone records are updated in place where possible, to avoid duplicates.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>A+ property</th><th>UNIT-e field</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Email Address</td><td><code>email</code></td><td><code>StudentEmailAddress</code> (PersonAddress record)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Home Telephone</td><td><code>telephones[]</code> (type H)</td><td><code>CurrentHomeTelephone</code> (PersonTelephone record)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Mobile Telephone</td><td><code>telephones[]</code> (type M)</td><td><code>StudentMobileTelephone</code> (PersonTelephone record)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Home Address</td><td><code>address1&#x2013;3</code>, <code>postcode</code>, <code>country</code></td><td><code>PersonAddress</code>: AddressLine1&#x2013;3, Town, County, Postcode, Country</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Emergency contacts -->
+    <div class="card">
+      <span class="section-num">SECTION 4</span>
+      <h2>Emergency contacts / next of kin</h2>
+      <p>Up to two emergency contacts (Priority 1 and Priority 2) submitted by parents are exported to UNIT-e and linked to the student record.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>A+ property</th><th>UNIT-e field</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Contact Name</td><td><code>contacts[]</code>: <code>first_name</code>, <code>middle_name</code>, <code>last_name</code></td><td><code>nok</code> — Person (Forenames, Surname), Priority 1 &amp; 2</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Relationship</td><td><code>contacts[].relationship</code></td><td><code>personnokrelatinshp</code> / <code>RelationshipType</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Contact Phones (Day / Evening / Mobile)</td><td><code>contacts[].telephones[]</code></td><td><code>personnoktelephone</code> (PersonTelephone record)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Contact Home Address</td><td><code>contacts[]</code>: <code>address1&#x2013;3</code>, <code>post_town</code>, <code>postcode</code>, <code>country</code></td><td><code>personnokaddress</code> (PersonAddress record)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Contact Email</td><td><code>contacts[].email</code></td><td>PersonAddress (Email) record</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Application data -->
+    <div class="card">
+      <span class="section-num">SECTION 5</span>
+      <h2>Application data</h2>
+      <p>Application-level data is exported to UNIT-e when an applicant is imported, and the application status is kept in step with the applicant's Admissions+ stage.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>A+ property</th><th>UNIT-e field</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Date Submitted</td><td><code>date_submitted</code></td><td><code>Tier4UpdateDate</code></td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Enrolment Date</td><td><code>expected_year_of_entry</code></td><td><code>DateStatusValidUntil</code> — derived from Expected Year of Entry (30 Sep of intake year)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Application Status</td><td>application / offer / enrolment status</td><td><code>studentapplication.status</code> — mapped from the applicant's current Admissions+ stage (offer, interview, enrolled, and more)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <p><strong>Default values applied on every import:</strong> each imported applicant is flagged as a student (<code>Is Student = true</code>), given an active student status (<code>A</code>), and assigned the default promotion / offer type code (<code>YTBD</code>) on the new UNIT-e application.</p>
+      </div>
+    </div>
+
+    <!-- School history -->
+    <div class="card">
+      <span class="section-num">SECTION 6</span>
+      <h2>School history (previous school)</h2>
+      <p>When applicants provide previous school details, the school is matched to a UNIT-e establishment and exported.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>A+ property</th><th>UNIT-e field</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Previous School</td><td><code>schools[]</code>: <code>la_code</code>, <code>establishment_number</code>, <code>urn</code>, <code>name</code></td><td><code>PreviousSchool</code> — matched by (1) LA Code + Establishment No., (2) URN, or (3) exact name</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Courses -->
+    <div class="card">
+      <span class="section-num">SECTION 7</span>
+      <h2>Courses, classes and enrolment</h2>
+      <p>Admissions+ courses are mapped to UNIT-e modules before import. The system auto-matches UNIT-e course reference codes to your Admissions+ Provider Course IDs, and saved mappings are restored automatically so you don't need to re-map on every import.</p>
+
+      <h3>Course status mapping</h3>
+      <p>Each Admissions+ course status is exported as the matching UNIT-e status code:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Admissions+ status</th><th>UNIT-e code</th><th>UNIT-e status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Interested (Application Form Subjects)</td><td><code>O</code></td><td>Original Application</td></tr>
+            <tr><td>Offer (Add to Offer List)</td><td><code>I</code></td><td>Interview Application</td></tr>
+            <tr><td>Enrolled (Confirmed Subjects)</td><td><code>E</code></td><td>Enrolment Application</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>How course sync behaves</h3>
+      <ul>
+        <li><strong>Duplicate prevention</strong> — courses already present in UNIT-e with the same module and status are skipped</li>
+        <li><strong>Keeps courses aligned</strong> — course entries removed in Admissions+ are cleared from UNIT-e before new courses are imported, so both systems stay in step</li>
+        <li><strong>Smart warning</strong> — if you try to import courses for applicants who haven't been imported yet, the app warns you and offers to import them first</li>
+      </ul>
+
+      <h3>Classes</h3>
+      <p>Class and group registrations are imported alongside courses, using the same mapping flow. A class is tied to its course, so the course is mapped first; colleges that don't use classes can skip the class-mapping step.</p>
+
+      <h3>Enrolment</h3>
+      <p>Immediately after classes are imported, students are <strong>automatically enrolled</strong> in UNIT-e — their confirmed courses and assigned classes are enrolled and the student is marked <strong>Active</strong>. There's no separate enrolment step.</p>
+
+      <div class="note warn">
+        <p><strong>No unenrolment via the API.</strong> UNIT-e's API cannot remove an enrolment, so <strong>finalise a student's subjects and classes before importing and enrolling them</strong>. Any change made afterwards must be made directly in UNIT-e — the integration cannot undo an enrolment.</p>
+      </div>
+    </div>
+
+    <!-- Lookup data -->
+    <div class="card">
+      <span class="section-num">SECTION 8</span>
+      <h2>Lookup data (reference lists)</h2>
+      <p>A dedicated Sync Lookups screen imports your UNIT-e reference lists into Admissions+, so that application form dropdowns match valid UNIT-e values exactly. Only active options are included.</p>
+
+      <h3>Imported lookup lists</h3>
+      <div class="lookup-list">
+        <span class="lookup-pill">Gender</span>
+        <span class="lookup-pill">Title</span>
+        <span class="lookup-pill">Nationality</span>
+        <span class="lookup-pill">Religion</span>
+        <span class="lookup-pill">Ethnicity</span>
+        <span class="lookup-pill">Disability</span>
+        <span class="lookup-pill">Country</span>
+        <span class="lookup-pill">First Language</span>
+        <span class="lookup-pill">Home Language</span>
+        <span class="lookup-pill">Mode of Travel</span>
+        <span class="lookup-pill">Service Children Education</span>
+        <span class="lookup-pill">Relationship to Student</span>
+        <span class="lookup-pill">Address Area</span>
+      </div>
+
+      <p style="margin-top:0.75rem;">The sync downloads active options from UNIT-e and applies them to Admissions+ in a single operation, with per-item success reporting.</p>
+    </div>
+
+    <!-- Write-back -->
+    <div class="card">
+      <span class="section-num">SECTION 9</span>
+      <h2>Data written back to Admissions+</h2>
+      <p>After each successful import, UNIT-e record identifiers are written back to Admissions+. This keeps both systems linked, so future imports update the same records instead of creating duplicates.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Data written back</th><th>Where it goes in Admissions+</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>UNIT-e Student ID</td><td><code>external_mis_person_id</code> — links future imports to the existing student</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>UNIT-e Application ID</td><td><code>external_mis_id</code> — identifies the linked application record</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>UNIT-e Address ID</td><td><code>mis_address_id</code> — identifies the linked address record</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>Student Reference</td><td><code>external_mis_reference_number</code> — the UNIT-e-generated student reference (surname prefix + application year + next number, e.g. TES202600520)</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>UNIT-e Course ID (per course)</td><td><code>external_mis_id</code> on each course — restores mapping next time</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>Import reports &amp; logs</td><td>HTML report and log files uploaded to Admissions+ after each run</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Setup requirements -->
+    <div class="part-band">Part B &mdash; Setting up the connection<span>For your IT / UNIT-e team</span></div>
+
+    <div class="card">
+      <span class="section-num">SECTION 10</span>
+      <h2>Setup requirements</h2>
+
+      <h3>What you need from UNIT-e</h3>
+      <ul>
+        <li><strong>WebAPI access</strong> — your UNIT-e WebAPI endpoint URL (e.g. <code>uniteapi.yourcollege.ac.uk</code>)</li>
+        <li><strong>API credentials</strong> — a <strong>dedicated UNIT-e API user account</strong> (not an individual member of staff's login) set up with the permissions listed below and shared by everyone who uses the Integration App. Its WebAPI login returns the session key the app uses for all calls.</li>
+      </ul>
+
+      <details class="report-acc">
+        <summary>
+          <span class="report-head"><span class="rname">API user permissions</span><span class="rhint">Show endpoints</span></span>
+          <span class="rpurpose">Your UNIT-e API user account must be able to call every endpoint the integration uses — a missing permission is the most common onboarding failure. Expand for the full list.</span>
+        </summary>
+        <div class="report-sample">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Area</th><th>UNIT-e endpoints</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Custom reports</td><td><code>report/export/json/API.*</code> — the six reports listed below</td></tr>
+            <tr><td>Students</td><td><code>class/get/student</code>, <code>class/create/student</code>, <code>class/insert/student</code>, <code>class/updateproperty/student</code></td></tr>
+            <tr><td>Applications</td><td><code>class/create/studentapplication</code>, <code>class/insert/studentapplication</code>, <code>class/updateproperty/studentapplication</code>, <code>class/find/studentapplication</code></td></tr>
+            <tr><td>Addresses</td><td><code>class/create/personaddress</code>, <code>class/insert/personaddress</code>, <code>class/get/personaddress</code>, <code>class/updateproperty/personaddress</code>, <code>class/find/personaddress</code></td></tr>
+            <tr><td>Telephones</td><td><code>class/create/persontelephone</code>, <code>class/insert/persontelephone</code>, <code>class/get/persontelephone</code>, <code>class/updateproperty/persontelephone</code></td></tr>
+            <tr><td>Courses &amp; classes</td><td><code>class/create/moduleapplication</code>, <code>class/insert/moduleapplication</code>, <code>class/delete/moduleapplication</code></td></tr>
+            <tr><td>Lookups</td><td><code>class/find/valid</code></td></tr>
+            <tr><td>Enrolment</td><td><code>process/enrolstudents</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+        </div>
+      </details>
+
+      <h3>Required UNIT-e reports</h3>
+      <p>The Integration App reads data from UNIT-e through its report export API (<code>report/export/json/&hellip;</code>). Before the integration can run, your UNIT-e team must create the following custom reports, named <strong>exactly</strong> as shown (names are case-sensitive). As these are custom reports, <strong>expand each one to see a sample of the JSON it should return</strong> so yours follows the same shape:</p>
+      <div class="report-acc-list">
+
+        <details class="report-acc">
+          <summary>
+            <span class="report-head"><span class="rname">API.AppOrStudent</span><span class="rhint">Sample response</span></span>
+            <span class="rpurpose">Checks whether an applicant already exists in UNIT-e, so the app knows whether to create a new record or update an existing one</span>
+          </summary>
+          <div class="report-sample">
+            <p class="sample-note">Each record carries a <code>Category</code>: <strong>Applicant</strong> = a student who also has a UNIT-e application; <strong>Student</strong> = a student with no application yet.</p>
+            <pre class="json">[
+    {
+        "Category": "Student",
+        "Student.Id": 16003087272144.0,
+        "Student.StudentReference": "950000759718",
+        "Student.Forenames": "Test Dulce Test Dulce Middle Name",
+        "Student.Surname": "Test Barrows",
+        "Student.PreferredName": "test",
+        "Student.DateOfBirth": "2015-04-30T00:00:00",
+        "Student.Title": "Engineer",
+        "Student.ConnexionsId": null,
+        "Student.Gender": "1",
+        "Student.Postcode": "EC3M 1EU",
+        "Student.UniqueLearnerNumber": null
+    },
+    {
+        "Category": "Applicant",
+        "Student.Id": 200004972133160.0,
+        "Student.StudentReference": "TES202600485 2P1 MZI",
+        "Student.Forenames": "Test Elizabeth Mtesta Atkinson Mtestab",
+        "Student.Surname": "Test Rohan Mtestab",
+        "Student.PreferredName": "Elizabeth Mtestab",
+        "Student.DateOfBirth": "2016-05-17T00:00:00",
+        "Student.Title": "Lady",
+        "Student.ConnexionsId": "U-3U42E",
+        "Student.Gender": "M",
+        "Student.Postcode": null,
+        "Student.UniqueLearnerNumber": "1002318962"
+    }
+]</pre>
+          </div>
+        </details>
+
+        <details class="report-acc">
+          <summary>
+            <span class="report-head"><span class="rname">API.NextStuRef</span><span class="rhint">Sample response</span></span>
+            <span class="rpurpose">Supplies the next student reference number, used to generate each new student's reference on import</span>
+          </summary>
+          <div class="report-sample">
+            <p class="sample-note"><strong>Format 1</strong> — next number only:</p>
+            <pre class="json">[
+    {
+        "NextStudentNumber": "950000759746"
+    }
+]</pre>
+            <p class="sample-note"><strong>Format 2</strong> — with application year:</p>
+            <pre class="json">[
+    {
+        "ApplicationYear": "2026",
+        "NextStudentNumber": "00549"
+    }
+]</pre>
+          </div>
+        </details>
+
+        <details class="report-acc">
+          <summary>
+            <span class="report-head"><span class="rname">API.LookupCourses</span><span class="rhint">Sample response</span></span>
+            <span class="rpurpose">Returns your course / module list so Admissions+ courses can be mapped to the right UNIT-e modules</span>
+          </summary>
+          <div class="report-sample">
+            <pre class="json">[
+    {
+        "ApplicationYear": "2026",
+        "Id": 16003020719950.0,
+        "Public name": "Computing Extended Diploma Year 2",
+        "Reference": "26VF1486",
+        "Start": "2025-09-01T00:00:00",
+        "End": "2027-06-24T00:00:00",
+        "Name": "Computing Extended Diploma Year 2"
+    }
+]</pre>
+          </div>
+        </details>
+
+        <details class="report-acc">
+          <summary>
+            <span class="report-head"><span class="rname">API.LookupClasses</span><span class="rhint">Sample response</span></span>
+            <span class="rpurpose">Returns your class / group list for mapping class registrations</span>
+          </summary>
+          <div class="report-sample">
+            <pre class="json">[
+    {
+        "ApplicationYear": "2026",
+        "Id": 16003087275106.0,
+        "Public name": "Directed Study Group 701 ",
+        "Reference": "26DRSG701",
+        "Start": "2026-08-31T00:00:00",
+        "End": "2027-06-21T00:00:00",
+        "Name": "Directed Study Group 701 "
+    }
+]</pre>
+          </div>
+        </details>
+
+        <details class="report-acc">
+          <summary>
+            <span class="report-head"><span class="rname">API.Schools</span><span class="rhint">Sample response</span></span>
+            <span class="rpurpose">Returns your schools list so previous-school details can be matched to the correct establishment</span>
+          </summary>
+          <div class="report-sample">
+            <pre class="json">[
+    {
+        "Id": 1680085.0,
+        "Reference": "BishopStortHigh",
+        "Name": "The Bishop's Stortford High School - Hertfordshire",
+        "School type": "Non Partner",
+        "School reference": "Current",
+        "Unique reference number": "117577",
+        "UK provider registration number": "10000737",
+        "School HESA HE Institution Code": "9195405"
+    }
+]</pre>
+          </div>
+        </details>
+
+        <details class="report-acc">
+          <summary>
+            <span class="report-head"><span class="rname">API.StuAppCourses</span><span class="rhint">Sample response</span></span>
+            <span class="rpurpose">Returns the courses already on a student's application, so re-imports don't create duplicates</span>
+          </summary>
+          <div class="report-sample">
+            <pre class="json">[
+    {
+        "student.id": 16001119423758.0,
+        "student.studentreference": "950000223242",
+        "student.forenames": "Andrew",
+        "student.surname": "Castle",
+        "student.preferredname": "Andrew",
+        "student.dob": "1993-01-01T00:00:00",
+        "student.title": "Mr",
+        "student.connexions": null,
+        "studentapplication.id": 16003000320076.0,
+        "studentapplication.reference": "APP08154645",
+        "moduleapplication.id": 16003000320077.0,
+        "moduleapplication.reference": "26VF2364",
+        "moduleapplication.name": "Access to Higher Education Diploma (Health Professions) - Thetford",
+        "moduleapplication.start": "2026-09-01T00:00:00",
+        "moduleapplication.end": "2027-06-24T00:00:00",
+        "moduleapplication.status": "A",
+        "moduleapplicatio_status_name": "Active",
+        "module.id": 16003021183154.0,
+        "module.reference": "26VF2364"
+    }
+]</pre>
+          </div>
+        </details>
+
+      </div>
+
+      <h3>Increase the API data limit</h3>
+      <p>UNIT-e's web API config caps <em>every</em> <code>report/export</code> response at a <code>DataLimit</code> — <strong>default 100 records</strong> — and truncates silently, with no error. <strong>Before go-live, raise it well above your peak applicant, student, class and course counts.</strong></p>
+      <details class="report-acc">
+        <summary><span class="report-head"><span class="rname">Why it matters &amp; how to set it</span><span class="rhint">Details</span></span></summary>
+        <div class="report-sample">
+      <p class="sample-note">At the default of 100, any report returning more than 100 rows is silently truncated (the API returns exactly 100 rows with no "more available" flag), so neither system can tell the list is incomplete. Your UNIT-e administrator or hosting team should:</p>
+      <ul>
+        <li><strong>Raise <code>DataLimit</code></strong> comfortably above the largest list the integration will ever pull — all applicants and students (the matching feed) and all classes and courses, sized for peak-season volumes rather than today's counts. A high value has no downside; the cap protects nothing, it only truncates. <em>The exact config file location is given in your UNIT-e API documentation.</em></li>
+        <li><strong>Trim the report queries</strong> to return only the rows the integration needs — filtering out unused codes and years keeps large reports fast, which is the right performance lever rather than a low cap.</li>
+        <li><strong>Republish each report and re-test</strong>, confirming the returned row count matches the totals in UNIT-e.</li>
+      </ul>
+      <div class="note warn">
+        <p><strong>Why it matters:</strong> truncation is invisible. A capped <code>API.AppOrStudent</code> feed means applicants are matched against only a fragment of your student roll, so existing students go unmatched and duplicate records are created in UNIT-e. Because the sync also reconciles against what the API returns, reference numbers missing from a truncated response can be misread as removals — so an under-set limit risks both duplicate records and incorrect data changes.</p>
+      </div>
+        </div>
+      </details>
+
+      <h3>What you need from Admissions+</h3>
+      <ul>
+        <li><strong>Admissions+ login</strong> — email, password, and your college subdomain</li>
+        <li><strong>Integration App installer</strong> — downloaded from the Admissions+ admin panel</li>
+      </ul>
+
+      <h3>IT requirements</h3>
+      <ul>
+        <li><strong>Windows desktop</strong> — the Integration App runs on Windows</li>
+        <li><strong>Network access</strong> — the app must reach your UNIT-e WebAPI host and your Admissions+ site</li>
+      </ul>
+
+      <h3>Domains and IPs to whitelist</h3>
+      <p><strong>Applicaa domains</strong> — allow the Integration App and its update checks to reach:</p>
+      <ul>
+        <li><code>*.applicaa.com</code> — your Admissions+ site (or your specific domain, e.g. <code>demo.applicaa.com</code> — replace <code>demo</code> with your school's domain)</li>
+        <li><code>api.applicaa.com</code> — checks for application updates</li>
+        <li><code>admissionsuk.s3.eu-west-2.amazonaws.com</code> — downloads new app versions, and student photos and documents</li>
+      </ul>
+      <p><strong>Applicaa support IPs</strong> — so the Applicaa team can reach your UNIT-e <strong>test and production</strong> environments for setup and debugging, please whitelist these source IPs on your UNIT-e / firewall:</p>
+      <ul>
+        <li>Private VPN — <code>216.122.163.5</code> (UK), <code>217.180.56.79</code> (SEA)</li>
+        <li>Private cloud PC (UK) — <code>18.170.28.214</code>, <code>18.130.72.81</code></li>
+      </ul>
+
+      <h3>How syncs work</h3>
+      <ul>
+        <li>Data transfers are initiated manually from the Integration App by staff</li>
+        <li>Expired UNIT-e sessions are detected and refreshed automatically, preventing mid-import failures</li>
+        <li>The app auto-updates on each launch and shows a changelog when a new version is available</li>
+        <li>Every import produces a per-student report showing successes, warnings, and errors — viewable in-app or downloadable</li>
+      </ul>
+    </div>
+
+    <!-- Coming soon -->
+    <div class="card">
+      <span class="section-num">SECTION 11</span>
+      <h2>Coming soon</h2>
+      <p>We're actively expanding the UNIT-e integration. The following capabilities are <strong>planned for upcoming releases</strong>:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Capability</th><th>Status</th><th>What to expect</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Advanced student matching</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>An upgrade to today's matching — fuzzy matching that tolerates minor differences, plus extra signals such as National Insurance number, mobile, and email</td></tr>
+            <tr><td>Export students to Admissions+</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Reverse sync — pull existing UNIT-e students into Admissions+ to invite internal students (e.g. Year 11s applying for Sixth Form) without re-applying from scratch</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin-top:0.75rem;">Want to help shape what we build next? Let your account manager know which of these would make the biggest difference for your college.</p>
+    </div>
+
+    <!-- Direction key -->
+    <div class="card" style="border-color: var(--border);">
+      <h2 style="border-bottom-color: var(--border);">Direction key</h2>
+      <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:0.25rem;">
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span>
+          <span style="font-size:0.8rem; color:var(--ink-secondary);">Admissions+ writes to UNIT-e</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <span class="dir-tag dir-import">UNIT-e &#x2192; A+</span>
+          <span style="font-size:0.8rem; color:var(--ink-secondary);">Imported from UNIT-e</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <span class="dir-tag dir-soon">Coming soon</span>
+          <span style="font-size:0.8rem; color:var(--ink-secondary);">Planned for an upcoming release</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body></html>
