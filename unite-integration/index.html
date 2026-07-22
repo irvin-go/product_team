@@ -408,6 +408,24 @@
   .cp { color: var(--coral); font-weight: 800; font-style: normal; }
   .brand-logo { margin-bottom: 1.1rem; }
   .brand-logo svg { height: 24px; width: auto; display: block; }
+  /* Report sample accordion */
+  .report-acc-list { border: 1px solid var(--border-light); border-radius: 5px; overflow: hidden; margin: 0.75rem 0; }
+  .report-acc, .report-row { border-bottom: 1px solid var(--border-light); }
+  .report-acc:last-child, .report-row:last-child { border-bottom: none; }
+  .report-acc > summary { list-style: none; cursor: pointer; padding: 0.7rem 0.9rem; }
+  .report-acc > summary::-webkit-details-marker { display: none; }
+  .report-acc > summary:hover { background: rgba(38,60,145,0.04); }
+  .report-row { padding: 0.7rem 0.9rem; }
+  .report-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; }
+  .rname { font-family: 'SF Mono','Cascadia Code','Consolas',monospace; font-size: 0.8rem; font-weight: 700; color: var(--navy); }
+  .rpurpose { display: block; font-size: 0.82rem; color: var(--ink-secondary); margin-top: 0.2rem; line-height: 1.5; }
+  .rhint { font-size: 0.68rem; font-weight: 700; color: var(--coral); letter-spacing: 0.03em; white-space: nowrap; text-transform: uppercase; }
+  .rhint::before { content: '\25B8  '; }
+  .report-acc[open] > summary .rhint::before { content: '\25BE  '; }
+  .rhint-muted { font-size: 0.68rem; color: var(--ink-muted); white-space: nowrap; font-style: italic; }
+  .report-sample { padding: 0 0.9rem 0.85rem; }
+  .report-sample .sample-note { font-size: 0.8rem; color: var(--ink-secondary); margin: 0.3rem 0 0.35rem; line-height: 1.5; }
+  pre.json { background: var(--surface); border: 1px solid var(--border-light); border-radius: 4px; padding: 0.7rem 0.85rem; overflow-x: auto; font-family: 'SF Mono','Cascadia Code','Consolas',monospace; font-size: 0.72rem; line-height: 1.5; color: var(--ink); margin: 0.25rem 0 0.5rem; }
 </style>
 </head>
 <body>
@@ -772,21 +790,149 @@
       </div>
 
       <h3>Required UNIT-e reports</h3>
-      <p>The Integration App reads data from UNIT-e through its report export API (<code>report/export/json/&hellip;</code>). Before the integration can run, your UNIT-e team must create the following custom reports, named <strong>exactly</strong> as shown (names are case-sensitive):</p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Report name</th><th>Purpose</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code>API.AppOrStudent</code></td><td>Checks whether an applicant already exists in UNIT-e, so the app knows whether to create a new record or update an existing one</td></tr>
-            <tr><td><code>API.NextStuRef</code></td><td>Supplies the next student reference number, used to generate each new student's reference on import</td></tr>
-            <tr><td><code>API.LookupCourses</code></td><td>Returns your course / module list so Admissions+ courses can be mapped to the right UNIT-e modules</td></tr>
-            <tr><td><code>API.LookupClasses</code></td><td>Returns your class / group list for mapping class registrations</td></tr>
-            <tr><td><code>API.Schools</code></td><td>Returns your schools list so previous-school details can be matched to the correct establishment</td></tr>
-            <tr><td><code>API.StuAppCourses</code></td><td>Returns the courses already on a student's application, so re-imports don't create duplicates</td></tr>
-          </tbody>
-        </table>
+      <p>The Integration App reads data from UNIT-e through its report export API (<code>report/export/json/&hellip;</code>). Before the integration can run, your UNIT-e team must create the following custom reports, named <strong>exactly</strong> as shown (names are case-sensitive). As these are custom reports, <strong>expand each one to see a sample of the JSON it should return</strong> so yours follows the same shape:</p>
+      <div class="report-acc-list">
+
+        <details class="report-acc">
+          <summary>
+            <span class="report-head"><span class="rname">API.AppOrStudent</span><span class="rhint">Sample response</span></span>
+            <span class="rpurpose">Checks whether an applicant already exists in UNIT-e, so the app knows whether to create a new record or update an existing one</span>
+          </summary>
+          <div class="report-sample">
+            <p class="sample-note">Each record carries a <code>Category</code>: <strong>Applicant</strong> = a student who also has a UNIT-e application; <strong>Student</strong> = a student with no application yet.</p>
+            <pre class="json">[
+    {
+        "Category": "Student",
+        "Student.Id": 16003087272144.0,
+        "Student.StudentReference": "950000759718",
+        "Student.Forenames": "Test Dulce Test Dulce Middle Name",
+        "Student.Surname": "Test Barrows",
+        "Student.PreferredName": "test",
+        "Student.DateOfBirth": "2015-04-30T00:00:00",
+        "Student.Title": "Engineer",
+        "Student.ConnexionsId": null,
+        "Student.Gender": "1",
+        "Student.Postcode": "EC3M 1EU",
+        "Student.UniqueLearnerNumber": null
+    },
+    {
+        "Category": "Applicant",
+        "Student.Id": 200004972133160.0,
+        "Student.StudentReference": "TES202600485 2P1 MZI",
+        "Student.Forenames": "Test Elizabeth Mtesta Atkinson Mtestab",
+        "Student.Surname": "Test Rohan Mtestab",
+        "Student.PreferredName": "Elizabeth Mtestab",
+        "Student.DateOfBirth": "2016-05-17T00:00:00",
+        "Student.Title": "Lady",
+        "Student.ConnexionsId": "U-3U42E",
+        "Student.Gender": "M",
+        "Student.Postcode": null,
+        "Student.UniqueLearnerNumber": "1002318962"
+    }
+]</pre>
+          </div>
+        </details>
+
+        <details class="report-acc">
+          <summary>
+            <span class="report-head"><span class="rname">API.NextStuRef</span><span class="rhint">Sample response</span></span>
+            <span class="rpurpose">Supplies the next student reference number, used to generate each new student's reference on import</span>
+          </summary>
+          <div class="report-sample">
+            <p class="sample-note"><strong>Format 1</strong> — next number only:</p>
+            <pre class="json">[
+    {
+        "NextStudentNumber": "950000759746"
+    }
+]</pre>
+            <p class="sample-note"><strong>Format 2</strong> — with application year:</p>
+            <pre class="json">[
+    {
+        "ApplicationYear": "2026",
+        "NextStudentNumber": "00549"
+    }
+]</pre>
+          </div>
+        </details>
+
+        <div class="report-row">
+          <span class="report-head"><span class="rname">API.LookupCourses</span><span class="rhint-muted">sample to follow</span></span>
+          <span class="rpurpose">Returns your course / module list so Admissions+ courses can be mapped to the right UNIT-e modules</span>
+        </div>
+
+        <details class="report-acc">
+          <summary>
+            <span class="report-head"><span class="rname">API.LookupClasses</span><span class="rhint">Sample response</span></span>
+            <span class="rpurpose">Returns your class / group list for mapping class registrations</span>
+          </summary>
+          <div class="report-sample">
+            <pre class="json">[
+    {
+        "ApplicationYear": "2026",
+        "Id": 16003087275106.0,
+        "Public name": "Directed Study Group 701 ",
+        "Reference": "26DRSG701",
+        "Start": "2026-08-31T00:00:00",
+        "End": "2027-06-21T00:00:00",
+        "Name": "Directed Study Group 701 "
+    }
+]</pre>
+          </div>
+        </details>
+
+        <details class="report-acc">
+          <summary>
+            <span class="report-head"><span class="rname">API.Schools</span><span class="rhint">Sample response</span></span>
+            <span class="rpurpose">Returns your schools list so previous-school details can be matched to the correct establishment</span>
+          </summary>
+          <div class="report-sample">
+            <pre class="json">[
+    {
+        "Id": 1680085.0,
+        "Reference": "BishopStortHigh",
+        "Name": "The Bishop's Stortford High School - Hertfordshire",
+        "School type": "Non Partner",
+        "School reference": "Current",
+        "Unique reference number": "117577",
+        "UK provider registration number": "10000737",
+        "School HESA HE Institution Code": "9195405"
+    }
+]</pre>
+          </div>
+        </details>
+
+        <details class="report-acc">
+          <summary>
+            <span class="report-head"><span class="rname">API.StuAppCourses</span><span class="rhint">Sample response</span></span>
+            <span class="rpurpose">Returns the courses already on a student's application, so re-imports don't create duplicates</span>
+          </summary>
+          <div class="report-sample">
+            <pre class="json">[
+    {
+        "student.id": 16001119423758.0,
+        "student.studentreference": "950000223242",
+        "student.forenames": "Andrew",
+        "student.surname": "Castle",
+        "student.preferredname": "Andrew",
+        "student.dob": "1993-01-01T00:00:00",
+        "student.title": "Mr",
+        "student.connexions": null,
+        "studentapplication.id": 16003000320076.0,
+        "studentapplication.reference": "APP08154645",
+        "moduleapplication.id": 16003000320077.0,
+        "moduleapplication.reference": "26VF2364",
+        "moduleapplication.name": "Access to Higher Education Diploma (Health Professions) - Thetford",
+        "moduleapplication.start": "2026-09-01T00:00:00",
+        "moduleapplication.end": "2027-06-24T00:00:00",
+        "moduleapplication.status": "A",
+        "moduleapplicatio_status_name": "Active",
+        "module.id": 16003021183154.0,
+        "module.reference": "26VF2364"
+    }
+]</pre>
+          </div>
+        </details>
+
       </div>
 
       <h3>Increase the API data limit (critical)</h3>
