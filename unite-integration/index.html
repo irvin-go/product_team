@@ -493,7 +493,7 @@
         <div class="coverage-item">
           <span class="label">Personal details</span>
           <span class="count">16</span>
-          <span class="detail">Names, DOB, gender, ethnicity, religion, nationality, languages, disability, travel</span>
+          <span class="detail">Names, DOB, gender, title, ethnicity, religion, nationality, country of birth, languages, disability, travel, address area, service child</span>
         </div>
         <div class="coverage-item">
           <span class="label">Identifiers</span>
@@ -512,8 +512,8 @@
         </div>
         <div class="coverage-item">
           <span class="label">Application data</span>
-          <span class="count">2</span>
-          <span class="detail">Date submitted, enrolment date</span>
+          <span class="count">3</span>
+          <span class="detail">Date submitted, enrolment date, application status</span>
         </div>
         <div class="coverage-item">
           <span class="label">School history</span>
@@ -633,7 +633,7 @@
     <div class="card">
       <span class="section-num">SECTION 5</span>
       <h2>Application data</h2>
-      <p>Application-level dates are exported to UNIT-e when an applicant is imported.</p>
+      <p>Application-level data is exported to UNIT-e when an applicant is imported, and the application status is kept in step with the applicant's Admissions+ stage.</p>
 
       <div class="table-wrap">
         <table>
@@ -643,6 +643,7 @@
           <tbody>
             <tr><td>Date Submitted</td><td><code>date_submitted</code></td><td><code>Tier4UpdateDate</code></td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
             <tr><td>Enrolment Date</td><td><code>expected_year_of_entry</code></td><td><code>DateStatusValidUntil</code> — derived from Expected Year of Entry (30 Sep of intake year)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Application Status</td><td>application / offer / enrolment status</td><td><code>studentapplication.status</code> — mapped from the applicant's current Admissions+ stage (offer, interview, enrolled, and more)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -971,7 +972,20 @@
       <h3>IT requirements</h3>
       <ul>
         <li><strong>Windows desktop</strong> — the Integration App runs on Windows</li>
-        <li><strong>Network access</strong> — reach both your Admissions+ site and your UNIT-e WebAPI host</li>
+        <li><strong>Network access</strong> — the app must reach your UNIT-e WebAPI host and your Admissions+ site</li>
+      </ul>
+
+      <h3>Domains and IPs to whitelist</h3>
+      <p><strong>Applicaa domains</strong> — allow the Integration App and its update checks to reach:</p>
+      <ul>
+        <li><code>*.applicaa.com</code> — your Admissions+ site (or your specific domain, e.g. <code>demo.applicaa.com</code> — replace <code>demo</code> with your school's domain)</li>
+        <li><code>api.applicaa.com</code> — checks for application updates</li>
+        <li><code>admissionsuk.s3.eu-west-2.amazonaws.com</code> — downloads new app versions, and student photos and documents</li>
+      </ul>
+      <p><strong>Applicaa support IPs</strong> — so the Applicaa team can reach your UNIT-e <strong>test and production</strong> environments for setup and debugging, please whitelist these source IPs on your UNIT-e / firewall:</p>
+      <ul>
+        <li>Private VPN — <code>216.122.163.5</code> (UK), <code>217.180.56.79</code> (SEA)</li>
+        <li>Private cloud PC (UK) — <code>18.170.28.214</code>, <code>18.130.72.81</code></li>
       </ul>
 
       <h3>How syncs work</h3>
@@ -995,7 +1009,6 @@
             <tr><th>Capability</th><th>Status</th><th>What to expect</th></tr>
           </thead>
           <tbody>
-            <tr><td>Application status sync</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Automatically update the UNIT-e student application status from the applicant's current Admissions+ stage (offer, interview, enrolled, and more)</td></tr>
             <tr><td>Advanced student matching</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Smarter duplicate detection using name + date of birth, National Insurance number, mobile, email, and postcode</td></tr>
             <tr><td>Export students to Admissions+</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Reverse sync — pull existing UNIT-e students into Admissions+ to invite internal students (e.g. Year 11s applying for Sixth Form) without re-applying from scratch</td></tr>
           </tbody>
