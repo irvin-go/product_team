@@ -475,11 +475,12 @@
       </div>
 
       <h3>Applicant matching</h3>
-      <p>Before importing, each applicant is automatically sorted into one of two groups so that no duplicate records are created:</p>
+      <p>Before importing, each applicant is automatically matched against your UNIT-e records — on Application ID, name, date of birth, gender, and postcode — and sorted into one of two groups so that no duplicate records are created:</p>
       <ul>
         <li><strong>New applicants</strong> — no existing UNIT-e record; a brand-new student and application is created in UNIT-e</li>
-        <li><strong>Existing applicants</strong> — already matched to a UNIT-e record; the existing student is updated and a new application is linked</li>
+        <li><strong>Existing applicants</strong> — matched to a UNIT-e record; the existing student is updated and a new application is linked</li>
       </ul>
+      <p>You can review and confirm the matches manually: matched fields are highlighted, and student-type badges show at a glance whether a person is already a UNIT-e student and whether they already have an application.</p>
 
       <div class="note">
         <p><strong>Safe by design:</strong> For student and contact data, Admissions+ only ever creates new records or updates existing values in UNIT-e — it does not delete a student's personal or contact records. Lookup values that UNIT-e doesn't recognise are skipped with a warning rather than causing the import to fail.</p>
@@ -703,7 +704,7 @@
       <p>Class and group registrations are imported alongside courses, using the same mapping flow. A class is tied to its course, so the course is mapped first; colleges that don't use classes can skip the class-mapping step.</p>
 
       <h3>Enrolment</h3>
-      <p>Once a student's subjects are confirmed, the Integration App enrols their confirmed courses and assigned classes into UNIT-e in a single step.</p>
+      <p>Immediately after classes are imported, students are <strong>automatically enrolled</strong> in UNIT-e — their confirmed courses and assigned classes are enrolled and the student is marked <strong>Active</strong>. There's no separate enrolment step.</p>
 
       <div class="note warn">
         <p><strong>No unenrolment via the API.</strong> UNIT-e's API cannot remove an enrolment, so <strong>finalise a student's subjects and classes before importing and enrolling them</strong>. Any change made afterwards must be made directly in UNIT-e — the integration cannot undo an enrolment.</p>
@@ -1009,7 +1010,7 @@
             <tr><th>Capability</th><th>Status</th><th>What to expect</th></tr>
           </thead>
           <tbody>
-            <tr><td>Advanced student matching</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Smarter duplicate detection using name + date of birth, National Insurance number, mobile, email, and postcode</td></tr>
+            <tr><td>Advanced student matching</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>An upgrade to today's matching — fuzzy matching that tolerates minor differences, plus extra signals such as National Insurance number, mobile, and email</td></tr>
             <tr><td>Export students to Admissions+</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Reverse sync — pull existing UNIT-e students into Admissions+ to invite internal students (e.g. Year 11s applying for Sixth Form) without re-applying from scratch</td></tr>
           </tbody>
         </table>
