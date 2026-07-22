@@ -752,7 +752,7 @@
       </ul>
 
       <h3>API user permissions</h3>
-      <p>The API login you provide must have permission to call <strong>every</strong> endpoint the integration uses. The most common cause of onboarding problems is an API user missing permission on one or more of these — the app then fails partway through an import. Make sure your UNIT-e API user can call:</p>
+      <p>The API login you provide must have permission to call <strong>every</strong> endpoint the integration uses. The most common cause of onboarding problems is an API user missing permission on one or more of these — the app then fails partway through an import. Make sure your UNIT-e API user can call each of the endpoints below:</p>
       <div class="table-wrap">
         <table>
           <thead>
@@ -760,11 +760,11 @@
           </thead>
           <tbody>
             <tr><td>Custom reports</td><td><code>report/export/json/API.*</code> — the six reports listed below</td></tr>
-            <tr><td>Students</td><td><code>class/get|create|insert|updateproperty/student</code></td></tr>
-            <tr><td>Applications</td><td><code>class/create|insert|updateproperty|find/studentapplication</code></td></tr>
-            <tr><td>Addresses</td><td><code>class/create|insert|get|updateproperty|find/personaddress</code></td></tr>
-            <tr><td>Telephones</td><td><code>class/create|insert|get|updateproperty/persontelephone</code></td></tr>
-            <tr><td>Courses &amp; classes</td><td><code>class/create|insert|delete/moduleapplication</code></td></tr>
+            <tr><td>Students</td><td><code>class/get/student</code>, <code>class/create/student</code>, <code>class/insert/student</code>, <code>class/updateproperty/student</code></td></tr>
+            <tr><td>Applications</td><td><code>class/create/studentapplication</code>, <code>class/insert/studentapplication</code>, <code>class/updateproperty/studentapplication</code>, <code>class/find/studentapplication</code></td></tr>
+            <tr><td>Addresses</td><td><code>class/create/personaddress</code>, <code>class/insert/personaddress</code>, <code>class/get/personaddress</code>, <code>class/updateproperty/personaddress</code>, <code>class/find/personaddress</code></td></tr>
+            <tr><td>Telephones</td><td><code>class/create/persontelephone</code>, <code>class/insert/persontelephone</code>, <code>class/get/persontelephone</code>, <code>class/updateproperty/persontelephone</code></td></tr>
+            <tr><td>Courses &amp; classes</td><td><code>class/create/moduleapplication</code>, <code>class/insert/moduleapplication</code>, <code>class/delete/moduleapplication</code></td></tr>
             <tr><td>Lookups</td><td><code>class/find/valid</code></td></tr>
             <tr><td>Enrolment</td><td><code>process/enrolstudents</code></td></tr>
           </tbody>
