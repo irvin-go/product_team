@@ -407,6 +407,19 @@
   .cp { color: var(--coral); font-weight: 800; font-style: normal; }
   .brand-logo { margin-bottom: 1.1rem; }
   .brand-logo svg { height: 24px; width: auto; display: block; }
+  /* Collapsible field tables */
+  .report-acc-list { border: 1px solid var(--border-light); border-radius: 5px; overflow: hidden; margin: 0.75rem 0; }
+  .report-acc { border-bottom: 1px solid var(--border-light); }
+  .report-acc:last-child { border-bottom: none; }
+  .report-acc > summary { list-style: none; cursor: pointer; padding: 0.75rem 0.95rem; }
+  .report-acc > summary::-webkit-details-marker { display: none; }
+  .report-acc > summary:hover { background: rgba(38,60,145,0.04); }
+  .report-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; }
+  .rtitle { font-family: 'Mulish', system-ui, sans-serif; font-weight: 700; font-size: 0.92rem; color: var(--navy); }
+  .rhint { font-size: 0.68rem; font-weight: 700; color: var(--coral); letter-spacing: 0.03em; white-space: nowrap; text-transform: uppercase; }
+  .rhint::before { content: '\25B8  '; }
+  .report-acc[open] > summary .rhint::before { content: '\25BE  '; }
+  .report-body { padding: 0 0.95rem 0.9rem; }
 </style>
 </head>
 <body>
@@ -515,6 +528,10 @@
       <h2>Student fields</h2>
       <p>These fields are transferred between a student's record in Admissions+ and their corresponding record in iSAMS.</p>
 
+      <div class="report-acc-list">
+      <details class="report-acc">
+        <summary><span class="report-head"><span class="rtitle">Field-by-field mapping</span><span class="rhint">Show table</span></span></summary>
+        <div class="report-body">
       <div class="table-wrap">
         <table>
           <thead>
@@ -544,6 +561,9 @@
           </tbody>
         </table>
       </div>
+        </div>
+      </details>
+      </div>
     </div>
 
     <!-- Contact / parent fields -->
@@ -552,6 +572,10 @@
       <h2>Contact / parent fields</h2>
       <p>Contact records are linked to students. When an applicant submits or updates these details, these fields can be written back to iSAMS.</p>
 
+      <div class="report-acc-list">
+      <details class="report-acc">
+        <summary><span class="report-head"><span class="rtitle">Field-by-field mapping</span><span class="rhint">Show table</span></span></summary>
+        <div class="report-body">
       <div class="table-wrap">
         <table>
           <thead>
@@ -579,6 +603,9 @@
             <tr><td>Country</td><td><code>country</code></td><td><span class="dir-tag dir-both">Both ↔</span></td></tr>
           </tbody>
         </table>
+      </div>
+        </div>
+      </details>
       </div>
     </div>
 
@@ -718,7 +745,10 @@
       <h2>Data+ annual review cycle</h2>
       <p>For schools using Data+, the integration supports the full round-trip: export student data from iSAMS, send review forms to parents, and write their updates back.</p>
 
-      <h3>What parents can update (and what syncs back)</h3>
+            <div class="report-acc-list">
+      <details class="report-acc">
+        <summary><span class="report-head"><span class="rtitle">What parents can update, and what syncs back</span><span class="rhint">Show table</span></span></summary>
+        <div class="report-body">
       <div class="table-wrap">
         <table>
           <thead>
@@ -741,6 +771,9 @@
             <tr><td>GP / medical practice</td><td><span class="dir-tag dir-unavail">Not currently synced</span></td></tr>
           </tbody>
         </table>
+      </div>
+        </div>
+      </details>
       </div>
 
       <div class="warn note">
