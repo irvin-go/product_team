@@ -362,7 +362,7 @@
     .page-header h1 { font-size: 1.5rem; }
     .flow { flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
     .flow-arrow { display: none; }
-    .coverage-grid { grid-template-columns: 1fr 1fr; }
+    .coverage-grid { grid-template-columns: 1fr; }
   }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -425,7 +425,9 @@
   .rhint-muted { font-size: 0.68rem; color: var(--ink-muted); white-space: nowrap; font-style: italic; }
   .report-sample { padding: 0 0.9rem 0.85rem; }
   .report-sample .sample-note { font-size: 0.8rem; color: var(--ink-secondary); margin: 0.3rem 0 0.35rem; line-height: 1.5; }
-  pre.json { background: var(--surface); border: 1px solid var(--border-light); border-radius: 4px; padding: 0.7rem 0.85rem; overflow-x: auto; font-family: 'SF Mono','Cascadia Code','Consolas',monospace; font-size: 0.72rem; line-height: 1.5; color: var(--ink); margin: 0.25rem 0 0.5rem; }
+  pre.json { background: var(--surface); border: 1px solid var(--border-light); border-radius: 4px; padding: 0.7rem 0.85rem; overflow: auto; max-height: 320px; font-family: 'SF Mono','Cascadia Code','Consolas',monospace; font-size: 0.72rem; line-height: 1.5; color: var(--ink); margin: 0.25rem 0 0.5rem; }
+  .part-band { margin: 1.75rem 0 0.5rem; padding-top: 0.6rem; border-top: 2px solid var(--navy); font-family: 'Mulish', system-ui, sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--navy); letter-spacing: -0.01em; }
+  .part-band span { display: block; font-family: 'Inter', system-ui, sans-serif; font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--coral); margin-top: 0.15rem; }
 </style>
 </head>
 <body>
@@ -441,6 +443,11 @@
 
 <div class="container">
   <div class="content">
+
+    <div class="note">
+      <p><strong>Who reads what &mdash;</strong> if you work in <strong>admissions</strong>, you only need <em>How the integration works</em> and <em>Coverage at a glance</em>. The rest (<em>Setup requirements</em> and the field tables) is for whoever connects the systems &mdash; your IT or UNIT-e team.</p>
+      <p style="margin-top:0.5rem;"><strong>Before you import &mdash;</strong> UNIT-e's API can't undo an enrolment, so finalise a student's subjects and classes before importing them; later changes are made directly in UNIT-e.</p>
+    </div>
 
     <!-- How it works -->
     <div class="card">
@@ -494,7 +501,7 @@
         <div class="coverage-item">
           <span class="label">Personal details</span>
           <span class="count">16</span>
-          <span class="detail">Names, DOB, gender, title, ethnicity, religion, nationality, country of birth, languages, disability, travel, address area, service child</span>
+          <span class="detail">Names, DOB, gender, title, contact, ethnicity, religion, nationality, languages &amp; more</span>
         </div>
         <div class="coverage-item">
           <span class="label">Identifiers</span>
@@ -535,11 +542,17 @@
     </div>
 
     <!-- Personal details -->
+    <div class="part-band">Part A &mdash; What data flows<span>For admissions staff</span></div>
+
     <div class="card">
       <span class="section-num">SECTION 1</span>
       <h2>Student personal details</h2>
       <p>These fields are transferred from a student's record in Admissions+ to their corresponding record in UNIT-e. Lookup-type fields are validated against your live UNIT-e lookup tables before import.</p>
 
+      <div class="report-acc-list">
+      <details class="report-acc">
+        <summary><span class="report-head"><span class="rname">View the 16 student fields</span><span class="rhint">field-by-field mapping</span></span></summary>
+        <div class="report-sample">
       <div class="table-wrap">
         <table>
           <thead>
@@ -561,9 +574,12 @@
             <tr><td>Disability</td><td><code>disability</code></td><td><code>Disability</code> (lookup, first value)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
             <tr><td>Mode of Travel</td><td><code>mode_of_travel</code></td><td><code>TravelMethod</code> (lookup, first value)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
             <tr><td>Service Children Education</td><td><code>service_child</code></td><td><code>ServiceStudent</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
-            <tr><td>Address Area</td><td><code>county</code></td><td><code>AddressArea</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Address Area</td><td><code>application_choice_order</code></td><td><code>AddressArea</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
           </tbody>
         </table>
+      </div>
+        </div>
+      </details>
       </div>
     </div>
 
@@ -579,9 +595,8 @@
             <tr><th>Field</th><th>A+ property</th><th>UNIT-e field</th><th>Direction</th></tr>
           </thead>
           <tbody>
-            <tr><td>Student Reference</td><td>Generated by UNIT-e</td><td><code>StudentReference</code> — auto-generated (surname prefix + application year + next number, e.g. TES202600520)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
             <tr><td>Unique Learner Number (ULN)</td><td><code>unique_learner_number</code></td><td><code>UniqueLearnerNumber</code></td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
-            <tr><td>Student Code</td><td><code>user_code</code></td><td>Student code field</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Student Code</td><td><code>user_code</code></td><td><code>ConnexionsId</code></td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -620,7 +635,7 @@
             <tr><th>Field</th><th>A+ property</th><th>UNIT-e field</th><th>Direction</th></tr>
           </thead>
           <tbody>
-            <tr><td>Contact Name</td><td><code>contacts[]</code>: <code>first_name</code>, <code>middle_name</code>, <code>last_name</code></td><td><code>nok</code> — Person (Forenames, Surname), Priority 1 &amp; 2</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
+            <tr><td>Contact Name</td><td><code>contacts[]</code>: <code>first_name</code>, <code>last_name</code></td><td><code>nok</code> — Person (Forenames, Surname), Priority 1 &amp; 2</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
             <tr><td>Relationship</td><td><code>contacts[].relationship</code></td><td><code>personnokrelatinshp</code> / <code>RelationshipType</code> (lookup)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
             <tr><td>Contact Phones (Day / Evening / Mobile)</td><td><code>contacts[].telephones[]</code></td><td><code>personnoktelephone</code> (PersonTelephone record)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
             <tr><td>Contact Home Address</td><td><code>contacts[]</code>: <code>address1&#x2013;3</code>, <code>post_town</code>, <code>postcode</code>, <code>country</code></td><td><code>personnokaddress</code> (PersonAddress record)</td><td><span class="dir-tag dir-export">A+ &#x2192; UNIT-e</span></td></tr>
@@ -768,8 +783,11 @@
             <tr><td>UNIT-e Student ID</td><td><code>external_mis_person_id</code> — links future imports to the existing student</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
             <tr><td>UNIT-e Application ID</td><td><code>external_mis_id</code> — identifies the linked application record</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
             <tr><td>UNIT-e Address ID</td><td><code>mis_address_id</code> — identifies the linked address record</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
-            <tr><td>Student Reference</td><td><code>external_mis_reference_number</code> — the generated UNIT-e reference</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>Student Reference</td><td><code>external_mis_reference_number</code> — the UNIT-e-generated student reference (surname prefix + application year + next number, e.g. TES202600520)</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
             <tr><td>UNIT-e Course ID (per course)</td><td><code>external_mis_id</code> on each course — restores mapping next time</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>UNIT-e Class ID (per class)</td><td><code>external_mis_id</code> on each class — restores mapping next time</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>Course last synced</td><td><code>last_external_course_synced_at</code> — when the course was last successfully imported for the selected student</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
+            <tr><td>Class last synced</td><td><code>last_external_class_synced_at</code> — when the class was last successfully imported for the selected student</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
             <tr><td>Import reports &amp; logs</td><td>HTML report and log files uploaded to Admissions+ after each run</td><td><span class="dir-tag dir-import">UNIT-e &#x2192; A+</span></td></tr>
           </tbody>
         </table>
@@ -777,6 +795,8 @@
     </div>
 
     <!-- Setup requirements -->
+    <div class="part-band">Part B &mdash; Setting up the connection<span>For your IT / UNIT-e team</span></div>
+
     <div class="card">
       <span class="section-num">SECTION 12</span>
       <h2>Setup requirements</h2>
@@ -787,8 +807,13 @@
         <li><strong>API credentials</strong> — a <strong>dedicated UNIT-e API user account</strong> (not an individual member of staff's login) set up with the permissions listed below and shared by everyone who uses the Integration App. Its WebAPI login returns the session key the app uses for all calls.</li>
       </ul>
 
-      <h3>API user permissions</h3>
-      <p>The API login you provide must have permission to call <strong>every</strong> endpoint the integration uses. The most common cause of onboarding problems is an API user missing permission on one or more of these — the app then fails partway through an import. Make sure your UNIT-e API user can call each of the endpoints below:</p>
+      <div class="report-acc-list">
+      <details class="report-acc">
+        <summary>
+          <span class="report-head"><span class="rname">API user permissions</span><span class="rhint">Show endpoints</span></span>
+          <span class="rpurpose">Your UNIT-e API user account must be able to call every endpoint the integration uses — a missing permission is the most common onboarding failure. Expand for the full list.</span>
+        </summary>
+        <div class="report-sample">
       <div class="table-wrap">
         <table>
           <thead>
@@ -805,6 +830,9 @@
             <tr><td>Enrolment</td><td><code>process/enrolstudents</code></td></tr>
           </tbody>
         </table>
+      </div>
+        </div>
+      </details>
       </div>
 
       <h3>Required UNIT-e reports</h3>
@@ -968,9 +996,13 @@
 
       </div>
 
-      <h3>Increase the API data limit (critical)</h3>
-      <p>The UNIT-e web API configuration file has a <code>DataLimit</code> setting — <strong>default 100 records</strong> — that caps <em>every</em> <code>report/export</code> response. At the default, any report returning more than 100 rows is <strong>silently truncated</strong>: the API returns exactly 100 rows with no error and no "more available" flag, so neither UNIT-e nor Admissions+ can tell the list is incomplete.</p>
-      <p>Before going live, your UNIT-e administrator or hosting team should:</p>
+      <h3>Increase the API data limit</h3>
+      <p>UNIT-e's web API config caps <em>every</em> <code>report/export</code> response at a <code>DataLimit</code> — <strong>default 100 records</strong> — and truncates silently, with no error. <strong>Before go-live, raise it well above your peak applicant, student, class and course counts.</strong></p>
+      <div class="report-acc-list">
+      <details class="report-acc">
+        <summary><span class="report-head"><span class="rname">Why it matters &amp; how to set it</span><span class="rhint">Details</span></span></summary>
+        <div class="report-sample">
+      <p class="sample-note">At the default of 100, any report returning more than 100 rows is silently truncated (the API returns exactly 100 rows with no "more available" flag), so neither system can tell the list is incomplete. Your UNIT-e administrator or hosting team should:</p>
       <ul>
         <li><strong>Raise <code>DataLimit</code></strong> comfortably above the largest list the integration will ever pull — all applicants and students (the matching feed) and all classes and courses, sized for peak-season volumes rather than today's counts. A high value has no downside; the cap protects nothing, it only truncates. <em>The exact config file location is given in your UNIT-e API documentation.</em></li>
         <li><strong>Trim the report queries</strong> to return only the rows the integration needs — filtering out unused codes and years keeps large reports fast, which is the right performance lever rather than a low cap.</li>
@@ -978,6 +1010,9 @@
       </ul>
       <div class="note warn">
         <p><strong>Why it matters:</strong> truncation is invisible. A capped <code>API.AppOrStudent</code> feed means applicants are matched against only a fragment of your student roll, so existing students go unmatched and duplicate records are created in UNIT-e. Because the sync also reconciles against what the API returns, reference numbers missing from a truncated response can be misread as removals — so an under-set limit risks both duplicate records and incorrect data changes.</p>
+      </div>
+        </div>
+      </details>
       </div>
 
       <h3>What you need from Admissions+</h3>
