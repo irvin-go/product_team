@@ -495,6 +495,11 @@
           <span class="count">4</span>
           <span class="detail">Previous school, dates attended</span>
         </div>
+        <div class="coverage-item">
+          <span class="label">Courses &amp; application</span>
+          <span class="count">6</span>
+          <span class="detail">Course choices, status, priority, and application year</span>
+        </div>
       </div>
     </div>
 
@@ -645,9 +650,36 @@
       </div>
     </div>
 
-    <!-- Lookup data -->
+    <!-- Courses & application -->
     <div class="card">
       <span class="section-num">SECTION 7</span>
+      <h2>Courses &amp; application</h2>
+      <p>When an applicant's course choices are confirmed in Admissions+, the courses and their status are exported to the student's application in Civica CCM, together with the application year. Course status and priority stay in step as they change in Admissions+.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>A+ property</th><th>Civica field</th><th>Direction</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Application Year</td><td><code>application_year</code></td><td><code>APPL_Year</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
+            <tr><td>Course Code</td><td><code>course_code</code></td><td><code>APPC_Provision_Code</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
+            <tr><td>Course Instance (cohort)</td><td><code>course_instance</code></td><td><code>APPC_Provision_Instance</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
+            <tr><td>Course Year</td><td><code>course_year</code></td><td><code>CourseYear</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
+            <tr><td>Course Status</td><td><code>course_status</code></td><td><code>APPC_Status_Code</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
+            <tr><td>Course Priority</td><td><code>course_priority</code></td><td><code>APPC_Application_Priority</code></td><td><span class="dir-tag dir-export">A+ &#x2192; Civica</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <p><strong>School-mapped values:</strong> course codes, status codes, and priorities use your Civica CCM lookup values, mapped to your Admissions+ course list during setup.</p>
+      </div>
+    </div>
+
+    <!-- Lookup data -->
+    <div class="card">
+      <span class="section-num">SECTION 8</span>
       <h2>Lookup data (reference lists)</h2>
       <p>Admissions+ imports your Civica CCM reference lists so that dropdowns and selection fields match your MIS exactly. This keeps data consistent and avoids validation errors during transfer.</p>
 
@@ -669,7 +701,7 @@
 
     <!-- Setup requirements -->
     <div class="card">
-      <span class="section-num">SECTION 8</span>
+      <span class="section-num">SECTION 9</span>
       <h2>Setup requirements</h2>
 
       <h3>What you need from Civica CCM</h3>
@@ -712,7 +744,7 @@
 
     <!-- Coming soon -->
     <div class="card">
-      <span class="section-num">SECTION 9</span>
+      <span class="section-num">SECTION 10</span>
       <h2>Coming soon</h2>
       <p>We're actively expanding the Civica CCM integration. The following capabilities are <strong>planned for upcoming releases</strong>:</p>
 
@@ -723,9 +755,9 @@
           </thead>
           <tbody>
             <tr><td>Email addresses</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Sync student email addresses to Civica CCM</td></tr>
-            <tr><td>Course selections</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Export applicants' course choices and statuses, and import the Civica course catalogue for the application form</td></tr>
+            <tr><td>Course catalogue import</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Import the Civica CCM course catalogue into Admissions+ to build application form course lists (exporting course choices and statuses to Civica CCM is now live &mdash; see Section 7)</td></tr>
             <tr><td>Qualifications on entry</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Export prior qualifications, grades, and awarding bodies to Civica CCM</td></tr>
-            <tr><td>SEN &amp; application data</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Sync SEN status, application year, and application notes to Civica CCM</td></tr>
+            <tr><td>SEN &amp; application data</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Sync SEN status and application notes to Civica CCM (application year is now live &mdash; see Section 7)</td></tr>
             <tr><td>Reverse sync (Civica to A+)</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Import existing student data from Civica CCM into Admissions+ for pre-populated forms</td></tr>
             <tr><td>Custom fields</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Map and export college-defined custom fields to Civica CCM</td></tr>
             <tr><td>Photo upload</td><td><span class="dir-tag dir-soon">Coming soon</span></td><td>Transfer student photos from Admissions+ to Civica CCM</td></tr>
